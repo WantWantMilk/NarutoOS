@@ -1,0 +1,338 @@
+/* style.css */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body, html {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+}
+
+/* 错误覆盖层 */
+.error-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #0a0a0a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    animation: fadeIn 0.5s cubic-bezier(0.2, 0.9, 0.3, 1);
+}
+
+.error-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 42px;
+    padding: 2.5rem 3rem;
+    text-align: center;
+    color: white;
+    border: 1px solid rgba(255, 100, 100, 0.3);
+    box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+    transform: scale(1);
+    animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.error-icon {
+    font-size: 4rem;
+    display: block;
+    margin-bottom: 1rem;
+}
+
+@keyframes popIn {
+    0% { opacity: 0; transform: scale(0.7); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* 主容器 */
+.os-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+/* 壁纸层 */
+.wallpaper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MCIgaGVpZ2h0PSI4MCIgdmlld0JveD0iMCAwIDQwIDQwIj48cmVjdCB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIGZpbGw9IiMxYTFhMWEiLz48cGF0aCBkPSJNMjAgMTBhMTAgMTAgMCAwIDEgMCAyMCAxMCAxMCAwIDAgMSAwLTIweiIgZmlsbD0iIzJhMmEyYSIvPjwvc3ZnPg=='); /* 深色底纹 */
+    background-size: 120px 120px;
+    background-color: #1a1e2b;
+    transition: background-image 0.5s ease;
+    z-index: 0;
+}
+
+/* 状态栏 */
+.status-bar {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 1.2rem;
+    background: rgba(0, 0, 0, 0.25);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    color: white;
+    font-weight: 500;
+    font-size: 0.9rem;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    transition: background 0.3s;
+}
+
+.status-icons span {
+    margin-left: 0.5rem;
+}
+
+/* 桌面图标区域 */
+.desktop-icons {
+    position: relative;
+    z-index: 5;
+    width: 100%;
+    height: calc(100% - 50px); /* 减去状态栏高度 */
+    padding: 1rem 1.5rem;
+    overflow-y: auto;
+    display: grid;
+    gap: 1.2rem;
+    align-content: flex-start;
+    transition: all 0.4s cubic-bezier(0.2, 0.9, 0.3, 1);
+}
+
+/* 传统桌面图标模式 (默认) */
+.layout-icons {
+    grid-template-columns: repeat(auto-fill, minmax(85px, 1fr));
+}
+
+.layout-icons .app-icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1), filter 0.2s;
+    filter: drop-shadow(0 8px 12px rgba(0,0,0,0.3));
+    animation: iconAppear 0.4s backwards;
+}
+
+.layout-icons .app-icon:hover {
+    transform: scale(1.08) translateY(-4px);
+    filter: drop-shadow(0 16px 24px rgba(0,0,0,0.4));
+}
+
+.layout-icons .icon-img {
+    width: 64px;
+    height: 64px;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    border: 1px solid rgba(255,255,255,0.2);
+    margin-bottom: 0.3rem;
+    transition: border-radius 0.3s ease;
+}
+
+.layout-icons .app-label {
+    color: white;
+    text-shadow: 0 2px 6px black;
+    font-size: 0.75rem;
+    font-weight: 500;
+    max-width: 80px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* 开始菜单布局 (简化: 底部有开始栏，图标排列更紧凑) */
+.layout-start .desktop-icons {
+    grid-template-columns: repeat(4, 1fr);
+    padding-bottom: 70px;
+}
+
+.layout-start .dock-area {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 70px;
+    background: rgba(20, 20, 30, 0.7);
+    backdrop-filter: blur(20px);
+    border-top: 1px solid rgba(255,255,255,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 20;
+}
+
+.layout-start .dock-area::after {
+    content: "⚡ 开始菜单 (演示)";
+    color: white;
+    font-weight: 300;
+    letter-spacing: 1px;
+}
+
+/* 动态磁贴布局 */
+.layout-tiles .desktop-icons {
+    grid-template-columns: repeat(6, 1fr);
+    gap: 0.5rem;
+}
+
+.layout-tiles .app-icon {
+    grid-column: span 2;
+    aspect-ratio: 1/1;
+}
+
+.layout-tiles .app-icon:nth-child(3n) {
+    grid-column: span 3;
+    aspect-ratio: 2/1;
+}
+
+.layout-tiles .app-icon:nth-child(5n+2) {
+    grid-column: span 1;
+}
+
+.layout-tiles .icon-img {
+    width: 100%;
+    height: 100%;
+    border-radius: 18px;
+    font-size: 2.5rem;
+    background: rgba(40, 100, 200, 0.5);
+    transition: border-radius 0.3s, transform 0.2s;
+}
+
+.layout-tiles .app-label {
+    display: none; /* 磁贴简洁模式 */
+}
+
+/* 图标出现动画 */
+@keyframes iconAppear {
+    0% { opacity: 0; transform: translateY(20px) scale(0.8); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* 应用窗口 */
+.window-container {
+    position: absolute;
+    top: 10%;
+    left: 5%;
+    width: 90%;
+    height: 80%;
+    background: rgba(30, 30, 40, 0.85);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    border-radius: 32px;
+    border: 1px solid rgba(255,255,255,0.15);
+    box-shadow: 0 30px 60px rgba(0,0,0,0.7), 0 0 0 2px rgba(255,255,255,0.05) inset;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transform-origin: center center;
+    animation: windowOpen 0.4s cubic-bezier(0.21, 1.11, 0.38, 1);
+    transition: opacity 0.25s, transform 0.3s;
+}
+
+.window-container.hidden {
+    display: none;
+}
+
+@keyframes windowOpen {
+    0% { opacity: 0; transform: scale(0.7) translateY(40px); }
+    100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.window-header {
+    padding: 1rem 1.5rem;
+    background: rgba(0,0,0,0.3);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.window-title {
+    font-weight: 500;
+    font-size: 1.1rem;
+}
+
+.window-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    border-radius: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+
+.window-close:hover {
+    background: rgba(255,70,70,0.6);
+}
+
+.window-content {
+    flex: 1;
+    width: 100%;
+    background: #1e1e2a;
+}
+
+#app-iframe {
+    width: 100%;
+    height: 100%;
+    background: white;
+}
+
+/* 移动端优化 */
+@media (max-width: 600px) {
+    .layout-icons {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.8rem;
+    }
+    .layout-icons .icon-img {
+        width: 58px;
+        height: 58px;
+        font-size: 1.8rem;
+    }
+    .window-container {
+        top: 5%;
+        left: 2%;
+        width: 96%;
+        height: 90%;
+        border-radius: 24px;
+    }
+}
+
+/* 适配大屏幕桌面 */
+@media (min-width: 1200px) {
+    .layout-icons {
+        grid-template-columns: repeat(8, 1fr);
+    }
+}
