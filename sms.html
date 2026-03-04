@@ -1,0 +1,315 @@
+<!-- sms.html 短信 + 邮件发送功能 -->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>短信 · 邮件</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        }
+        body {
+            background: #1e1e2a;
+            color: white;
+            min-height: 100vh;
+            padding: 16px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        /* 短信区域 */
+        .section-title {
+            font-size: 1.2rem;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #ddd;
+        }
+        .section-title span {
+            background: #3a3a4a;
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            color: #aaa;
+        }
+        .chat-area {
+            background: #2c2c3a;
+            border-radius: 28px;
+            padding: 20px 16px;
+            margin-bottom: 32px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+        }
+        .message {
+            background: #3a3a4a;
+            border-radius: 22px;
+            padding: 12px 18px;
+            margin: 10px 0;
+            max-width: 80%;
+            width: fit-content;
+            animation: messagePop 0.3s cubic-bezier(0.2, 0.9, 0.3, 1);
+        }
+        .message.mine {
+            background: #0a6b4f;
+            margin-left: auto;
+        }
+        .time {
+            font-size: 0.7rem;
+            color: #aaa;
+            margin-top: 4px;
+            text-align: right;
+        }
+        .input-area {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+            background: #2c2c3a;
+            border-radius: 40px;
+            padding: 8px 12px;
+        }
+        .input-area input {
+            flex: 1;
+            background: #3a3a4a;
+            border: none;
+            border-radius: 30px;
+            padding: 12px 18px;
+            color: white;
+            font-size: 1rem;
+        }
+        .input-area input::placeholder {
+            color: #888;
+        }
+        .input-area button {
+            background: #3a3a4a;
+            border: none;
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            font-size: 1.4rem;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .input-area button:active {
+            background: #5a5a7a;
+            transform: scale(0.9);
+        }
+
+        /* 邮件区域 */
+        .email-section {
+            background: #2c2c3a;
+            border-radius: 28px;
+            padding: 24px 20px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+            animation: slideUp 0.4s ease;
+        }
+        .email-field {
+            margin-bottom: 18px;
+        }
+        .email-field label {
+            display: block;
+            font-size: 0.85rem;
+            color: #aaa;
+            margin-bottom: 6px;
+            letter-spacing: 0.5px;
+        }
+        .email-field input,
+        .email-field textarea {
+            width: 100%;
+            background: #3a3a4a;
+            border: 1px solid #4a4a5a;
+            border-radius: 18px;
+            padding: 14px 18px;
+            color: white;
+            font-size: 1rem;
+            transition: border 0.2s, box-shadow 0.2s;
+        }
+        .email-field input:focus,
+        .email-field textarea:focus {
+            outline: none;
+            border-color: #0a6b4f;
+            box-shadow: 0 0 0 3px rgba(10,107,79,0.2);
+        }
+        .email-field textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        .send-email-btn {
+            background: #0a6b4f;
+            color: white;
+            border: none;
+            border-radius: 40px;
+            padding: 16px 24px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            width: 100%;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.2, 0.9, 0.3, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 12px;
+        }
+        .send-email-btn:active {
+            transform: scale(0.97);
+            background: #0d8b66;
+        }
+        .send-email-btn:disabled {
+            opacity: 0.5;
+            transform: none;
+            pointer-events: none;
+        }
+        .note {
+            text-align: center;
+            color: #888;
+            font-size: 0.8rem;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #3a3a4a;
+        }
+        .note a {
+            color: #4a9e8c;
+            text-decoration: none;
+        }
+
+        @keyframes messagePop {
+            0% { opacity: 0; transform: translateY(10px) scale(0.95); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 短信演示区域 (保持原有功能) -->
+        <div class="section-title">
+            💬 与 张三 <span>演示</span>
+        </div>
+        <div class="chat-area">
+            <div class="message">
+                晚上一起吃饭？
+                <div class="time">19:30</div>
+            </div>
+            <div class="message mine">
+                好啊，几点？
+                <div class="time">19:32</div>
+            </div>
+            <div class="message">
+                七点吧，老地方
+                <div class="time">19:33</div>
+            </div>
+            <!-- 模拟输入框 (仅为演示) -->
+            <div class="input-area">
+                <input type="text" placeholder="短信演示..." value="👋 演示模式" disabled>
+                <button disabled>📎</button>
+            </div>
+        </div>
+
+        <!-- 新增邮件发送功能 (真实可发送) -->
+        <div class="section-title">
+            ✉️ 发送邮件 <span>真实发送</span>
+        </div>
+        <div class="email-section">
+            <div class="email-field">
+                <label>📨 收件人</label>
+                <input type="email" id="emailTo" placeholder="例如: friend@example.com" value="test@example.com">
+            </div>
+            <div class="email-field">
+                <label>📌 主题</label>
+                <input type="text" id="emailSubject" placeholder="邮件主题" value="来自幻界OS的问候">
+            </div>
+            <div class="email-field">
+                <label>📝 正文</label>
+                <textarea id="emailBody" placeholder="输入邮件内容...">你好！这是一封通过幻界OS发送的测试邮件。</textarea>
+            </div>
+            <button class="send-email-btn" id="sendEmailBtn">
+                <span>✈️</span> 打开邮件客户端发送
+            </button>
+            <div class="note">
+                ⚡ 点击后会自动打开您的默认邮件客户端（如 Outlook、Apple Mail、Gmail应用等），邮件将通过您的邮箱真实发出。<br>
+                <a href="#" onclick="alert('mailto协议是标准的电子邮件链接，由您本机邮件客户端处理。')">了解原理</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const toInput = document.getElementById('emailTo');
+            const subjectInput = document.getElementById('emailSubject');
+            const bodyInput = document.getElementById('emailBody');
+            const sendBtn = document.getElementById('sendEmailBtn');
+
+            // 简单的邮箱格式验证 (非严格，仅提示)
+            function isValidEmail(email) {
+                return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+            }
+
+            sendBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+
+                const to = toInput.value.trim();
+                const subject = subjectInput.value.trim();
+                const body = bodyInput.value.trim();
+
+                // 基本验证
+                if (!to) {
+                    alert('请输入收件人邮箱地址');
+                    toInput.focus();
+                    return;
+                }
+                if (!isValidEmail(to)) {
+                    alert('邮箱格式不正确，请检查 (示例: name@example.com)');
+                    toInput.focus();
+                    return;
+                }
+
+                // 使用 mailto 协议构造链接
+                // 需要对特殊字符进行编码
+                const mailtoLink = `mailto:${encodeURIComponent(to)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+                // 打开默认邮件客户端 (尝试在新窗口/标签页打开)
+                // 注意：由于浏览器限制，可能无法在新标签打开，但 mailto: 会触发放置
+                window.location.href = mailtoLink;  // 直接在当前页跳转触发（更好）
+
+                // 可选：同时给用户一点反馈
+                sendBtn.style.opacity = '0.8';
+                setTimeout(() => {
+                    sendBtn.style.opacity = '1';
+                }, 200);
+            });
+
+            // 回车快捷发送 (在任意输入框按回车触发)
+            const inputs = [toInput, subjectInput, bodyInput];
+            inputs.forEach(input => {
+                input.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();  // 防止表单提交或换行
+                        sendBtn.click();
+                    }
+                });
+            });
+
+            // 对于 textarea，允许 Shift+Enter 换行，普通 Enter 发送
+            bodyInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendBtn.click();
+                }
+            });
+
+            // 额外提示：mailto 的局限性（正文中的换行处理）
+            // 但浏览器通常可以处理 %0A 作为换行，我们的 encodeURIComponent 会正确转换
+        })();
+    </script>
+</body>
+</html>
