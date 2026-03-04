@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>相册 · 本地照片</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #1e1e2a;
+            color: white;
+            font-family: sans-serif;
+            padding: 10px;
+            min-height: 100vh;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding: 0 8px;
+        }
+        .header h2 {
+            font-weight: 400;
+            font-size: 1.5rem;
+        }
+        .clear-btn {
+            background: #3a3a4a;
+            border: none;
+            color: white;
+            padding: 8px 18px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .clear-btn:active {
+            background: #5a5a7a;
+        }
+        .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 8px;
+        }
+        .photo-item {
+            aspect-ratio: 1/1;
+            border-radius: 16px;
+            overflow: hidden;
+            background: #2a2a3a;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+            transition: transform 0.2s ease;
+        }
+        .photo-item:active {
+            transform: scale(0.96);
+        }
+        .photo-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .empty-album {
+            text-align: center;
+            margin-top: 40px;
+            color: #aaa;
+            font-size: 1.2rem;
+        }
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+            color: #666;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2>📸 相册</h2>
+        <button class="clear-btn" id="clearBtn">清空所有</button>
+    </div>
+    <div id="photoGrid" class="photo-grid"></div>
+    <div class="footer" id="footerNote"></div>
+
+    <script>
+        function loadPhotos() {
+            const grid = document.getElementById('photoGrid');
+            const footer = document.getElementById('footerNote');
+            let photos = [];
+
+            try {
+                const stored = localStorage.getItem('photos');
+                if (stored) photos = JSON.parse(stored);
+            } catch (e) {
+                console.warn('读取失败', e);
+            }
+
+            if (!photos || photos.length === 0) {
+                grid.innerHTML = '<div class="empty-album">✨ 暂无照片，快去拍照吧</div>';
+                footer.innerText = '';
+                return;
+            }
+
+            // 按时间倒序显示（最新的在前）
+            photos.sort((a, b) => b.timestamp - a.timestamp);
+
+            let html = '';
+            photos.forEach(photo => {
+                html += `<div class="photo-item"><img src="${photo.data}" loading="lazy" alt="照片"></div>`;
+            });
+            grid.innerHTML = html;
+            footer.innerText = `共 ${photos.length} 张照片 (本地存储)`;
+        }
+
+        // 清空所有照片
+        document.getElementById('clearBtn').addEventListener('click', () => {
+            if (confirm('确定要删除所有照片吗？')) {
+                localStorage.removeItem('photos');
+                loadPhotos();
+            }
+        });
+
+        // 初始加载
+        loadPhotos();
+
+        // 可选：监听 storage 事件（当其他标签页修改时更新，但本演示在同一页面内，可以不处理）
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'photos') loadPhotos();
+        });
+    </script>
+</body>
+</html>
