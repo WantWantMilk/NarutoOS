@@ -1,0 +1,16 @@
+<!-- settings.html 设置 (与父页面postMessage通信) -->
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<style>body{background:#2a2a35;color:white;padding:1rem;font-family:sans-serif}.option{background:#3a3a48;border-radius:18px;padding:1rem;margin:1rem 0}.btn-group{display:flex;gap:0.5rem;flex-wrap:wrap}.btn{background:#5a5a6a;border:none;color:white;padding:0.5rem 1rem;border-radius:30px;flex:1;cursor:pointer}</style>
+</head>
+<body><h2>⚙️ 设置 (演示)</h2><div class="option"><strong>壁纸</strong><div class="btn-group"><button class="btn" onclick="changeWallpaper('default')">默认</button><button class="btn" onclick="changeWallpaper('forest')">森林</button><button class="btn" onclick="changeWallpaper('light')">浅色</button></div></div><div class="option"><strong>桌面布局</strong><div class="btn-group"><button class="btn" onclick="changeLayout('icons')">传统图标</button><button class="btn" onclick="changeLayout('start')">开始菜单</button><button class="btn" onclick="changeLayout('tiles')">动态磁贴</button></div></div><script>
+    function changeWallpaper(style) {
+        window.parent.postMessage({ type: 'changeWallpaper', wallpaper: style }, '*');
+    }
+    function changeLayout(mode) {
+        window.parent.postMessage({ type: 'changeLayout', layout: mode }, '*');
+    }
+</script>
+</body>
+</html>
