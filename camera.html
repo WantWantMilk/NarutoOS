@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>相机 · 实时预览</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #000;
+            color: white;
+            font-family: sans-serif;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .preview-area {
+            flex: 1;
+            background: #1a1a1a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scaleX(-1); /* 前置摄像头镜像效果，更自然 */
+        }
+        .controls {
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid #333;
+        }
+        .shutter {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: white;
+            border: 4px solid #aaa;
+            transition: transform 0.1s ease;
+            cursor: pointer;
+        }
+        .shutter:active {
+            transform: scale(0.9);
+            background: #ddd;
+        }
+        .permission-note {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.8);
+            padding: 12px 20px;
+            border-radius: 40px;
+            font-size: 16px;
+            pointer-events: none;
+            backdrop-filter: blur(5px);
+            border: 1px solid #444;
+        }
+    </style>
+</head>
+<body>
+    <div class="preview-area">
+        <video id="video" autoplay playsinline muted></video>
+        <canvas id="canvas" style="display: none;"></canvas>
+        <div id="permissionMsg" class="permission-note">请求摄像头权限…</div>
+    </div>
+    <div class="controls">
+        <div class="shutter" id="captureBtn" title="拍照"></div>
+    </div>
+
+    <script>
+        (async function() {
+            const video = document.getElementById('video');
+            const canvas = document.getElementById('canvas');
+            const permissionMsg = document.getElementById('permissionMsg');
+            const captureBtn = document.getElementById('captureBtn');
+
+            let stream = null;
+
+            // 请求摄像头权限（优先使用后置摄像头，移动设备常见）
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { facingMode: { ideal: 'environment' } }, // 环境摄像头（后置）
+                    audio: false 
+                });
+                video.srcObject = stream;
+                permissionMsg.style.display = 'none';
+            } catch (err) {
+                permissionMsg.innerText = '❌ 无法访问摄像头: ' + err.message;
+                console.error(err);
+                captureBtn.style.opacity = '0.5';
+                captureBtn.style.pointerEvents = 'none';
+                return;
+            }
+
+            // 拍照功能
+            captureBtn.addEventListener('click', () => {
+                // 设置canvas尺寸与视频流一致
+                const track = stream.getVideoTracks()[0];
+                const settings = track.getSettings();
+                canvas.width = settings.width || video.videoWidth;
+                canvas.height = settings.height || video.videoHeight;
+
+                const context = canvas.getContext('2d');
+                // 注意视频可能因镜像而翻转，这里不需要额外处理，直接绘制
+                context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+                // 转为 base64 图片数据
+                const imageData = canvas.toDataURL('image/jpeg', 0.9); // JPEG 质量90%
+
+                // 保存到 localStorage (与相册共享)
+                savePhoto(imageData);
+
+                // 可选：拍照震动反馈
+                if (navigator.vibrate) navigator.vibrate(50);
+            });
+
+            // 保存图片到本地存储
+            function savePhoto(dataURL) {
+                // 从 localStorage 读取现有照片数组
+                let photos = [];
+                try {
+                    const stored = localStorage.getItem('photos');
+                    if (stored) photos = JSON.parse(stored);
+                } catch (e) {
+                    console.warn('读取存储失败', e);
+                }
+
+                // 添加新照片（只保存必要信息，避免存储过大？但 base64 会很大，演示可接受）
+                photos.push({
+                    data: dataURL,
+                    timestamp: Date.now(),
+                    id: 'photo_' + Date.now() + '_' + Math.random().toString(36).substr(2, 8)
+                });
+
+                // 限制存储数量（最多20张，避免超出 localStorage 限制）
+                if (photos.length > 20) photos = photos.slice(-20);
+
+                try {
+                    localStorage.setItem('photos', JSON.stringify(photos));
+                    // 可选：通过 postMessage 通知父页面（可用于更新相册小红点等，但本演示略）
+                } catch (e) {
+                    alert('存储空间不足，无法保存照片。请删除一些旧照片。');
+                }
+            }
+
+            // 页面关闭时释放摄像头
+            window.addEventListener('beforeunload', () => {
+                if (stream) {
+                    stream.getTracks().forEach(track => track.stop());
+                }
+            });
+        })();
+    </script>
+</body>
+</html>
