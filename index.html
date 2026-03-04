@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>幻界OS · 简易操作系统</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- HarmonyOS 检测报错层 (默认隐藏) -->
+    <div id="harmony-error" class="error-overlay" style="display: none;">
+        <div class="error-card">
+            <span class="error-icon">🚫</span>
+            <h1>不支持的平台</h1>
+            <p>检测到 HarmonyOS，根据要求本系统暂无法在此环境运行。<br>请使用 iOS / Android / Windows / Linux 标准浏览器访问。</p>
+        </div>
+    </div>
+
+    <!-- 主操作系统界面 (默认显示) -->
+    <div id="os-container" class="os-container">
+        <!-- 动态壁纸层 -->
+        <div id="wallpaper" class="wallpaper"></div>
+
+        <!-- 状态栏 -->
+        <header class="status-bar">
+            <div class="time" id="live-time">--:--</div>
+            <div class="status-icons">
+                <span>📶</span><span>📱</span><span>🔋</span>
+            </div>
+        </header>
+
+        <!-- 主屏幕图标区域 (根据设置切换布局类) -->
+        <div id="desktop-icons" class="desktop-icons layout-icons">
+            <!-- 图标由JS动态生成，保持index简洁 -->
+        </div>
+
+        <!-- 开始菜单 / 磁贴扩展 (占位，实际通过布局类切换) -->
+        <div class="dock-area" id="dockArea"></div>
+
+        <!-- 应用窗口容器 (用于展示浮动窗口) -->
+        <div id="app-window-container" class="window-container hidden">
+            <div class="window-header">
+                <span class="window-title" id="window-title">应用</span>
+                <button class="window-close" id="closeWindowBtn">✕</button>
+            </div>
+            <div class="window-content" id="window-content">
+                <iframe id="app-iframe" frameborder="0" allow="camera; microphone; geolocation"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <!-- 外部JavaScript文件 -->
+    <script src="script.js"></script>
+</body>
+</html>
