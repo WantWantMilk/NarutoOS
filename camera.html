@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>相机 · 实时预览</title>
+    <title>相机 · 拍照+录像</title>
     <style>
         * {
             margin: 0;
@@ -32,28 +32,7 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transform: scaleX(-1); /* 前置摄像头镜像效果，更自然 */
-        }
-        .controls {
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(10px);
-            border-top: 1px solid #333;
-        }
-        .shutter {
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            background: white;
-            border: 4px solid #aaa;
-            transition: transform 0.1s ease;
-            cursor: pointer;
-        }
-        .shutter:active {
-            transform: scale(0.9);
-            background: #ddd;
+            /* transform 由 JavaScript 动态控制，根据摄像头类型设置镜像 */
         }
         .permission-note {
             position: absolute;
@@ -68,16 +47,114 @@
             backdrop-filter: blur(5px);
             border: 1px solid #444;
         }
+        
+        /* 控制区域 */
+        .controls {
+            padding: 20px 20px 30px;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid #333;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        /* 模式切换 */
+        .mode-switch {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        .mode-btn {
+            background: #3a3a4a;
+            border: none;
+            color: #aaa;
+            padding: 8px 24px;
+            border-radius: 40px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .mode-btn.active {
+            background: #0a6b4f;
+            color: white;
+            transform: scale(1.05);
+        }
+        
+        /* 拍摄按钮区域 */
+        .action-area {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+        }
+        .shutter {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: white;
+            border: 4px solid #aaa;
+            transition: transform 0.1s ease;
+            cursor: pointer;
+        }
+        .shutter:active {
+            transform: scale(0.9);
+            background: #ddd;
+        }
+        .shutter.recording {
+            background: #ff4444;
+            border-color: #ff8888;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        /* 计时器 */
+        .timer {
+            font-size: 1.5rem;
+            font-family: monospace;
+            color: white;
+            text-shadow: 0 0 10px rgba(255,255,255,0.5);
+            min-width: 100px;
+            text-align: center;
+        }
+        .timer.recording {
+            color: #ff4444;
+            animation: blink 1s infinite;
+        }
+        @keyframes blink {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+        
+        canvas {
+            display: none;
+        }
     </style>
 </head>
 <body>
     <div class="preview-area">
         <video id="video" autoplay playsinline muted></video>
-        <canvas id="canvas" style="display: none;"></canvas>
+        <canvas id="canvas"></canvas>
         <div id="permissionMsg" class="permission-note">请求摄像头权限…</div>
     </div>
+    
     <div class="controls">
-        <div class="shutter" id="captureBtn" title="拍照"></div>
+        <!-- 模式切换 -->
+        <div class="mode-switch">
+            <button id="photoModeBtn" class="mode-btn active">📷 拍照</button>
+            <button id="videoModeBtn" class="mode-btn">🎥 录像</button>
+        </div>
+        
+        <!-- 拍摄区域 -->
+        <div class="action-area">
+            <div class="timer" id="timerDisplay">00:00</div>
+            <div class="shutter" id="captureBtn" title="拍照/录制"></div>
+        </div>
     </div>
 
     <script>
@@ -86,80 +163,245 @@
             const canvas = document.getElementById('canvas');
             const permissionMsg = document.getElementById('permissionMsg');
             const captureBtn = document.getElementById('captureBtn');
-
+            const photoModeBtn = document.getElementById('photoModeBtn');
+            const videoModeBtn = document.getElementById('videoModeBtn');
+            const timerDisplay = document.getElementById('timerDisplay');
+            
             let stream = null;
-
-            // 请求摄像头权限（优先使用后置摄像头，移动设备常见）
+            let currentMode = 'photo'; // 'photo' 或 'video'
+            
+            // 录像相关变量
+            let mediaRecorder = null;
+            let recordedChunks = [];
+            let recordingStartTime = null;
+            let timerInterval = null;
+            let isRecording = false;
+            
+            // 请求摄像头权限
             try {
                 stream = await navigator.mediaDevices.getUserMedia({ 
-                    video: { facingMode: { ideal: 'environment' } }, // 环境摄像头（后置）
-                    audio: false 
+                    video: { 
+                        facingMode: { ideal: 'environment' }, // 优先后置摄像头
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 }
+                    }, 
+                    audio: true // 录像需要音频
                 });
                 video.srcObject = stream;
                 permissionMsg.style.display = 'none';
+                
+                // 根据摄像头类型设置镜像：前置摄像头预览镜像，后置保持原样
+                const track = stream.getVideoTracks()[0];
+                const settings = track.getSettings();
+                if (settings.facingMode === 'user') {
+                    video.style.transform = 'scaleX(-1)'; // 前置摄像头镜像
+                } else {
+                    video.style.transform = 'none'; // 后置摄像头不镜像
+                }
+                
             } catch (err) {
                 permissionMsg.innerText = '❌ 无法访问摄像头: ' + err.message;
                 console.error(err);
                 captureBtn.style.opacity = '0.5';
                 captureBtn.style.pointerEvents = 'none';
+                photoModeBtn.disabled = true;
+                videoModeBtn.disabled = true;
                 return;
             }
-
-            // 拍照功能
-            captureBtn.addEventListener('click', () => {
-                // 设置canvas尺寸与视频流一致
-                const track = stream.getVideoTracks()[0];
-                const settings = track.getSettings();
-                canvas.width = settings.width || video.videoWidth;
-                canvas.height = settings.height || video.videoHeight;
-
-                const context = canvas.getContext('2d');
-                // 注意视频可能因镜像而翻转，这里不需要额外处理，直接绘制
-                context.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-                // 转为 base64 图片数据
-                const imageData = canvas.toDataURL('image/jpeg', 0.9); // JPEG 质量90%
-
-                // 保存到 localStorage (与相册共享)
-                savePhoto(imageData);
-
-                // 可选：拍照震动反馈
-                if (navigator.vibrate) navigator.vibrate(50);
+            
+            // 模式切换
+            photoModeBtn.addEventListener('click', () => {
+                if (isRecording) return; // 录制中不能切换
+                currentMode = 'photo';
+                photoModeBtn.classList.add('active');
+                videoModeBtn.classList.remove('active');
+                captureBtn.classList.remove('recording');
+                timerDisplay.classList.remove('recording');
+                timerDisplay.textContent = '00:00';
+                captureBtn.title = '拍照';
             });
-
-            // 保存图片到本地存储
-            function savePhoto(dataURL) {
-                // 从 localStorage 读取现有照片数组
-                let photos = [];
+            
+            videoModeBtn.addEventListener('click', () => {
+                if (isRecording) return;
+                currentMode = 'video';
+                videoModeBtn.classList.add('active');
+                photoModeBtn.classList.remove('active');
+                captureBtn.title = '开始录制';
+            });
+            
+            // 拍照功能
+            function takePhoto() {
+                // 设置canvas尺寸与视频流一致
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                
+                const context = canvas.getContext('2d');
+                // 如果视频是镜像的，绘制时需要处理以保持正确方向
+                if (video.style.transform === 'scaleX(-1)') {
+                    context.translate(canvas.width, 0);
+                    context.scale(-1, 1);
+                }
+                context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                
+                // 重置变换
+                context.setTransform(1, 0, 0, 1, 0, 0);
+                
+                // 转为 base64 图片数据
+                const imageData = canvas.toDataURL('image/jpeg', 0.9);
+                
+                // 保存到 localStorage
+                saveMedia(imageData, 'photo');
+                
+                // 拍照反馈
+                if (navigator.vibrate) navigator.vibrate(50);
+            }
+            
+            // 开始录像
+            function startRecording() {
+                recordedChunks = [];
+                // 检查浏览器是否支持所需的 MIME 类型
+                const mimeType = MediaRecorder.isTypeSupported('video/webm;codecs=vp9,opus') 
+                    ? 'video/webm;codecs=vp9,opus' 
+                    : 'video/webm';
+                
+                mediaRecorder = new MediaRecorder(stream, {
+                    mimeType: mimeType
+                });
+                
+                mediaRecorder.ondataavailable = (event) => {
+                    if (event.data.size > 0) {
+                        recordedChunks.push(event.data);
+                    }
+                };
+                
+                mediaRecorder.onstop = () => {
+                    // 合并视频数据
+                    const blob = new Blob(recordedChunks, { type: 'video/webm' });
+                    
+                    // 转换为 Base64 保存
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                        saveMedia(reader.result, 'video');
+                    };
+                    reader.readAsDataURL(blob);
+                    
+                    // 清理
+                    recordedChunks = [];
+                };
+                
+                // 开始录制，每秒触发一次 dataavailable
+                mediaRecorder.start(1000);
+                isRecording = true;
+                
+                // 更新 UI
+                captureBtn.classList.add('recording');
+                timerDisplay.classList.add('recording');
+                recordingStartTime = Date.now();
+                
+                // 启动计时器
+                timerInterval = setInterval(updateTimer, 100);
+                
+                // 禁用模式切换
+                photoModeBtn.style.opacity = '0.5';
+                videoModeBtn.style.opacity = '0.5';
+                photoModeBtn.style.pointerEvents = 'none';
+                videoModeBtn.style.pointerEvents = 'none';
+            }
+            
+            // 停止录像
+            function stopRecording() {
+                if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                    mediaRecorder.stop();
+                }
+                
+                isRecording = false;
+                clearInterval(timerInterval);
+                
+                // 更新 UI
+                captureBtn.classList.remove('recording');
+                timerDisplay.classList.remove('recording');
+                timerDisplay.textContent = '00:00';
+                
+                // 启用模式切换
+                photoModeBtn.style.opacity = '1';
+                videoModeBtn.style.opacity = '1';
+                photoModeBtn.style.pointerEvents = 'auto';
+                videoModeBtn.style.pointerEvents = 'auto';
+            }
+            
+            // 更新计时器
+            function updateTimer() {
+                if (!recordingStartTime) return;
+                const elapsed = Math.floor((Date.now() - recordingStartTime) / 1000);
+                const minutes = Math.floor(elapsed / 60);
+                const seconds = elapsed % 60;
+                timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+            
+            // 保存媒体到 localStorage (照片或视频)
+            function saveMedia(dataURL, type) {
+                // 从 localStorage 读取现有媒体数组
+                let mediaItems = [];
                 try {
-                    const stored = localStorage.getItem('photos');
-                    if (stored) photos = JSON.parse(stored);
+                    const stored = localStorage.getItem('mediaItems');
+                    if (stored) mediaItems = JSON.parse(stored);
                 } catch (e) {
                     console.warn('读取存储失败', e);
                 }
-
-                // 添加新照片（只保存必要信息，避免存储过大？但 base64 会很大，演示可接受）
-                photos.push({
+                
+                // 添加新媒体
+                mediaItems.push({
                     data: dataURL,
+                    type: type, // 'photo' 或 'video'
                     timestamp: Date.now(),
-                    id: 'photo_' + Date.now() + '_' + Math.random().toString(36).substr(2, 8)
+                    id: type + '_' + Date.now() + '_' + Math.random().toString(36).substr(2, 8)
                 });
-
-                // 限制存储数量（最多20张，避免超出 localStorage 限制）
-                if (photos.length > 20) photos = photos.slice(-20);
-
+                
+                // 限制存储数量（最多30个，视频文件较大，注意 LocalStorage 容量约5-10MB）
+                if (mediaItems.length > 30) mediaItems = mediaItems.slice(-30);
+                
                 try {
-                    localStorage.setItem('photos', JSON.stringify(photos));
-                    // 可选：通过 postMessage 通知父页面（可用于更新相册小红点等，但本演示略）
+                    localStorage.setItem('mediaItems', JSON.stringify(mediaItems));
+                    
+                    // 可选：显示保存成功提示
+                    if (type === 'video') {
+                        const msg = document.createElement('div');
+                        msg.style.cssText = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#0a6b4f;color:white;padding:8px 16px;border-radius:40px;z-index:9999';
+                        msg.textContent = '✅ 视频已保存到相册';
+                        document.body.appendChild(msg);
+                        setTimeout(() => msg.remove(), 2000);
+                    } else {
+                        const msg = document.createElement('div');
+                        msg.style.cssText = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#0a6b4f;color:white;padding:8px 16px;border-radius:40px;z-index:9999';
+                        msg.textContent = '✅ 照片已保存';
+                        document.body.appendChild(msg);
+                        setTimeout(() => msg.remove(), 1000);
+                    }
                 } catch (e) {
-                    alert('存储空间不足，无法保存照片。请删除一些旧照片。');
+                    alert('存储空间不足，无法保存。请删除一些旧照片或视频。');
                 }
             }
-
+            
+            // 拍摄按钮点击处理
+            captureBtn.addEventListener('click', () => {
+                if (currentMode === 'photo') {
+                    takePhoto();
+                } else {
+                    if (!isRecording) {
+                        startRecording();
+                    } else {
+                        stopRecording();
+                    }
+                }
+            });
+            
             // 页面关闭时释放摄像头
             window.addEventListener('beforeunload', () => {
                 if (stream) {
                     stream.getTracks().forEach(track => track.stop());
+                }
+                if (timerInterval) {
+                    clearInterval(timerInterval);
                 }
             });
         })();
