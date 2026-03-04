@@ -1,0 +1,17 @@
+<!-- calendar.html 日历(获取设备日期) -->
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<style>body{background:#1e2a2a;color:white;font-family:sans-serif;padding:1rem;margin:0}.header{display:flex;justify-content:space-between}.days{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:1rem}.day{background:#2a3a3a;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;border-radius:12px}.today{background:#3a6a6a;font-weight:bold}</style>
+</head>
+<body><div class="header"><span id="monthYear"></span><span>📅 演示</span></div><div class="days" id="calendarGrid"></div>
+<script>
+    const now=new Date();const year=now.getFullYear(),month=now.getMonth();
+    document.getElementById('monthYear').innerText=year+'年'+(month+1)+'月';
+    const firstDay=new Date(year,month,1).getDay();const daysInMonth=new Date(year,month+1,0).getDate();
+    let grid='';for(let i=0;i<firstDay;i++)grid+='<div class="day"></div>';
+    for(let d=1;d<=daysInMonth;d++){const cls=(d===now.getDate()?'day today':'day');grid+=`<div class="${cls}">${d}</div>`;}
+    document.getElementById('calendarGrid').innerHTML=grid;
+</script>
+</body>
+</html>
