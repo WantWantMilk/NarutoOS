@@ -6,160 +6,71 @@
     <title>NarutoOS</title>
     <style>
         /* ===== 全局重置 & 基础 ===== */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: -apple-system, "PingFang SC", "Helvetica Neue", sans-serif;
-            user-select: none;
-        }
-        body {
-            background: #1a1a2e;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            min-height: 100dvh;
-            padding: 16px;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, "PingFang SC", "Helvetica Neue", sans-serif; user-select: none; }
+        body { background: #1a1a2e; display: flex; justify-content: center; align-items: center; min-height: 100vh; min-height: 100dvh; padding: 16px; }
         .phone {
-            width: 390px;
-            max-width: 100%;
-            height: 780px;
-            max-height: 95vh;
-            max-height: 95dvh;
-            background: #f5f5f5;
-            border-radius: 44px;
-            padding: 14px 14px 8px 14px;
-            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.7), inset 0 0 0 2px #3a3a4a;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
+            width: 390px; max-width: 100%; height: 780px; max-height: 95vh; max-height: 95dvh;
+            background: #f5f5f5; border-radius: 44px; padding: 14px 14px 8px 14px;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.7), inset 0 0 0 2px #3a3a4a;
+            position: relative; display: flex; flex-direction: column; overflow: hidden;
         }
         .notch {
-            position: absolute;
-            top: 14px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 150px;
-            height: 28px;
-            background: #1a1a2e;
-            border-radius: 0 0 18px 18px;
-            z-index: 100;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
+            position: absolute; top: 14px; left: 50%; transform: translateX(-50%);
+            width: 150px; height: 28px; background: #1a1a2e; border-radius: 0 0 18px 18px;
+            z-index: 100; display: flex; align-items: center; justify-content: center; gap: 8px;
         }
         .notch .cam { width: 8px; height: 8px; background: #2d2d44; border-radius: 50%; border: 1px solid #3a3a5a; }
         .notch .speaker { width: 50px; height: 5px; background: #2d2d44; border-radius: 4px; }
 
         .status-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 6px 12px 4px 12px;
-            font-size: 13px;
-            font-weight: 600;
-            color: #1a1a2e;
-            background: transparent;
-            flex-shrink: 0;
-            position: relative;
-            z-index: 50;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 6px 12px 4px 12px; font-size: 13px; font-weight: 600;
+            color: #1a1a2e; background: transparent; flex-shrink: 0; position: relative; z-index: 50;
         }
         .status-bar .time { font-weight: 700; letter-spacing: 0.5px; }
         .status-bar .icons { display: flex; gap: 6px; align-items: center; font-size: 14px; }
         .status-bar .lock-btn {
-            background: none;
-            border: none;
-            font-size: 16px;
-            cursor: pointer;
-            padding: 0 4px;
-            color: #1a1a2e;
+            background: none; border: none; font-size: 16px; cursor: pointer; padding: 0 4px; color: #1a1a2e;
         }
         .status-bar .lock-btn:active { transform: scale(0.8); }
 
         .desktop {
-            flex: 1;
-            overflow-y: auto;
-            padding: 8px 4px 4px 4px;
-            display: flex;
-            flex-direction: column;
-            scroll-behavior: smooth;
+            flex: 1; overflow-y: auto; padding: 8px 4px 4px 4px;
+            display: flex; flex-direction: column; scroll-behavior: smooth;
         }
         .desktop::-webkit-scrollbar { width: 0; }
         .desktop-date {
-            text-align: center;
-            font-size: 14px;
-            font-weight: 500;
-            color: #555;
-            padding: 4px 0 8px 0;
-            letter-spacing: 0.5px;
-            flex-shrink: 0;
+            text-align: center; font-size: 14px; font-weight: 500; color: #555;
+            padding: 4px 0 8px 0; letter-spacing: 0.5px; flex-shrink: 0;
         }
         .app-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 16px 6px;
-            padding: 4px 2px 12px 2px;
-            flex: 1;
-            align-content: start;
+            display: grid; grid-template-columns: repeat(4, 1fr);
+            gap: 16px 6px; padding: 4px 2px 12px 2px;
+            flex: 1; align-content: start;
         }
         .app-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 6px;
-            cursor: grab;
-            transition: transform 0.15s, opacity 0.2s;
-            padding: 6px 0;
-            border-radius: 16px;
-            touch-action: none;
+            display: flex; flex-direction: column; align-items: center; gap: 6px;
+            cursor: grab; transition: transform 0.15s, opacity 0.2s;
+            padding: 6px 0; border-radius: 16px; touch-action: none;
         }
         .app-item:active { transform: scale(0.92); }
         .app-item.dragging { opacity: 0.3; transform: scale(0.9); }
         .app-item .icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 32px;
-            color: #fff;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            position: relative;
-            pointer-events: none;
+            width: 60px; height: 60px; border-radius: 16px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 32px; color: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            position: relative; pointer-events: none;
         }
         .app-item .icon .badge {
-            position: absolute;
-            top: -4px;
-            right: -4px;
-            background: #ff3b30;
-            color: #fff;
-            font-size: 10px;
-            font-weight: 700;
-            min-width: 18px;
-            height: 18px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0 5px;
-            border: 1.5px solid #f5f5f5;
+            position: absolute; top: -4px; right: -4px; background: #ff3b30; color: #fff;
+            font-size: 10px; font-weight: 700; min-width: 18px; height: 18px;
+            border-radius: 10px; display: flex; align-items: center; justify-content: center;
+            padding: 0 5px; border: 1.5px solid #f5f5f5;
         }
         .app-item .label {
-            font-size: 11px;
-            color: #1a1a2e;
-            font-weight: 500;
-            text-align: center;
-            line-height: 1.2;
-            max-width: 64px;
-            word-break: break-all;
-            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5);
-            pointer-events: none;
+            font-size: 11px; color: #1a1a2e; font-weight: 500; text-align: center;
+            line-height: 1.2; max-width: 64px; word-break: break-all;
+            text-shadow: 0 1px 2px rgba(255,255,255,0.5); pointer-events: none;
         }
 
         .icon-orange { background: linear-gradient(145deg, #f57c00, #e65100); }
@@ -179,39 +90,24 @@
         .icon-lightblue { background: linear-gradient(145deg, #40c4ff, #01579b); }
 
         .dock {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
+            display: flex; justify-content: center; gap: 20px;
             padding: 10px 16px 6px 16px;
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(24px);
+            background: rgba(255,255,255,0.7); backdrop-filter: blur(24px);
             -webkit-backdrop-filter: blur(24px);
-            border-radius: 28px;
-            margin: 0 4px 2px 4px;
-            flex-shrink: 0;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.04);
-            min-height: 70px;
-            align-items: center;
+            border-radius: 28px; margin: 0 4px 2px 4px;
+            flex-shrink: 0; border: 1px solid rgba(255,255,255,0.3);
+            box-shadow: 0 -2px 12px rgba(0,0,0,0.04);
+            min-height: 70px; align-items: center;
         }
         .dock .app-item { cursor: grab; touch-action: none; }
         .dock .app-item .icon { width: 50px; height: 50px; font-size: 26px; border-radius: 14px; }
         .dock .app-item .label { display: none; }
 
         .app-window {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: #f8f9fc;
-            border-radius: 44px;
-            z-index: 200;
-            display: none;
-            flex-direction: column;
-            overflow: hidden;
-            animation: appOpen 0.32s cubic-bezier(0.32, 0.72, 0, 1);
-            padding: 0;
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: #f8f9fc; border-radius: 44px; z-index: 200;
+            display: none; flex-direction: column; overflow: hidden;
+            animation: appOpen 0.32s cubic-bezier(0.32, 0.72, 0, 1); padding: 0;
         }
         .app-window.active { display: flex; }
         @keyframes appOpen {
@@ -219,29 +115,24 @@
             100% { transform: scale(1) translateY(0); opacity: 1; border-radius: 44px; }
         }
         .app-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+            display: flex; align-items: center; justify-content: space-between;
             padding: 14px 20px 10px 20px;
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(12px);
+            background: rgba(255,255,255,0.85); backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-            flex-shrink: 0;
-            min-height: 54px;
-            padding-top: 18px;
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+            flex-shrink: 0; min-height: 54px; padding-top: 18px;
         }
         .app-header .title { font-size: 17px; font-weight: 700; color: #1a1a2e; display: flex; align-items: center; gap: 8px; }
         .app-header .title .emoji { font-size: 20px; }
         .app-header .close-btn {
-            width: 32px; height: 32px; border-radius: 50%; background: rgba(0,0,0,0.06); border: none; font-size: 18px;
-            cursor: pointer; display: flex; align-items: center; justify-content: center; color: #555; transition: background 0.2s;
+            width: 32px; height: 32px; border-radius: 50%; background: rgba(0,0,0,0.06);
+            border: none; font-size: 18px; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; color: #555;
+            transition: background 0.2s;
         }
         .app-header .close-btn:active { transform: scale(0.88); background: rgba(0,0,0,0.12); }
         .app-body {
-            flex: 1;
-            overflow-y: auto;
-            padding: 16px 18px 20px 18px;
+            flex: 1; overflow-y: auto; padding: 16px 18px 20px 18px;
             background: #f8f9fc;
         }
         .app-body::-webkit-scrollbar { width: 3px; }
@@ -249,144 +140,57 @@
 
         /* 锁屏 */
         .lock-screen {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.75);
-            backdrop-filter: blur(20px);
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.75); backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            z-index: 999;
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            border-radius: 44px;
+            z-index: 999; display: none; flex-direction: column;
+            align-items: center; justify-content: center; border-radius: 44px;
             color: #fff;
         }
         .lock-screen.active { display: flex; }
-        .lock-screen .lock-time {
-            font-size: 72px;
-            font-weight: 300;
-            letter-spacing: 4px;
-            margin-bottom: 12px;
-        }
-        .lock-screen .lock-date {
-            font-size: 18px;
-            opacity: 0.7;
-            margin-bottom: 40px;
-        }
-        .lock-screen .lock-pin {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
+        .lock-screen .lock-time { font-size: 72px; font-weight: 300; letter-spacing: 4px; margin-bottom: 12px; }
+        .lock-screen .lock-date { font-size: 18px; opacity: 0.7; margin-bottom: 40px; }
+        .lock-screen .lock-pin { display: flex; gap: 12px; margin-bottom: 20px; }
         .lock-screen .lock-pin input {
-            width: 50px;
-            height: 50px;
-            border-radius: 12px;
-            border: none;
-            background: rgba(255,255,255,0.15);
-            color: #fff;
-            font-size: 24px;
-            text-align: center;
-            outline: none;
-            caret-color: transparent;
+            width: 50px; height: 50px; border-radius: 12px; border: none;
+            background: rgba(255,255,255,0.15); color: #fff; font-size: 24px;
+            text-align: center; outline: none; caret-color: transparent;
         }
         .lock-screen .lock-pin input:focus { background: rgba(255,255,255,0.25); }
-        .lock-screen .lock-actions {
-            display: flex;
-            gap: 16px;
-            margin-top: 12px;
-        }
+        .lock-screen .lock-actions { display: flex; gap: 16px; margin-top: 12px; }
         .lock-screen .lock-actions button {
-            padding: 10px 28px;
-            border: none;
-            border-radius: 30px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.15s;
+            padding: 10px 28px; border: none; border-radius: 30px;
+            font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.15s;
         }
         .lock-screen .lock-actions .unlock-btn { background: #e65100; color: #fff; }
         .lock-screen .lock-actions .unlock-btn:active { transform: scale(0.92); }
         .lock-screen .lock-actions .cancel-btn { background: rgba(255,255,255,0.2); color: #fff; }
         .lock-screen .lock-actions .cancel-btn:active { transform: scale(0.92); }
         .lock-screen .lock-status { font-size: 14px; opacity: 0.6; margin-top: 12px; }
-        .lock-screen .set-password-area {
-            margin-top: 30px;
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            background: rgba(255,255,255,0.08);
-            padding: 10px 18px;
-            border-radius: 40px;
-        }
-        .lock-screen .set-password-area input {
-            background: transparent;
-            border: 1px solid rgba(255,255,255,0.3);
-            border-radius: 20px;
-            padding: 6px 14px;
-            color: #fff;
-            font-size: 16px;
-            width: 120px;
-            outline: none;
-        }
-        .lock-screen .set-password-area input::placeholder { color: rgba(255,255,255,0.4); }
-        .lock-screen .set-password-area button {
-            background: #e65100;
-            border: none;
-            color: #fff;
-            padding: 6px 16px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: 600;
-        }
 
-        /* 时钟Tab */
+        /* 时钟Tabs */
         .clock-tabs {
-            display: flex;
-            gap: 4px;
-            border-bottom: 1px solid #e0e0e0;
-            margin-bottom: 16px;
-            flex-wrap: wrap;
+            display: flex; gap: 4px; border-bottom: 1px solid #e0e0e0;
+            margin-bottom: 16px; flex-wrap: wrap;
         }
         .clock-tabs .tab {
-            padding: 8px 14px;
-            cursor: pointer;
-            font-weight: 600;
-            color: #888;
-            border-bottom: 3px solid transparent;
-            transition: all 0.2s;
-            font-size: 14px;
+            padding: 8px 14px; cursor: pointer; font-weight: 600;
+            color: #888; border-bottom: 3px solid transparent; transition: all 0.2s; font-size: 14px;
         }
         .clock-tabs .tab.active { color: #1a1a2e; border-bottom-color: #e65100; }
         .clock-tab-content { display: none; }
         .clock-tab-content.active { display: block; }
 
-        /* 秒表、计时器样式 */
         .stopwatch-display, .timer-display {
-            font-size: 48px;
-            font-weight: 300;
-            text-align: center;
-            padding: 20px 0;
-            font-variant-numeric: tabular-nums;
+            font-size: 48px; font-weight: 300; text-align: center;
+            padding: 20px 0; font-variant-numeric: tabular-nums;
         }
         .stopwatch-controls, .timer-controls {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-            flex-wrap: wrap;
+            display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
         }
         .stopwatch-controls button, .timer-controls button {
-            padding: 8px 24px;
-            border: none;
-            border-radius: 30px;
-            font-weight: 600;
-            cursor: pointer;
-            background: #eee;
-            color: #1a1a2e;
+            padding: 8px 24px; border: none; border-radius: 30px;
+            font-weight: 600; cursor: pointer; background: #eee; color: #1a1a2e;
             transition: all 0.15s;
         }
         .stopwatch-controls button:active, .timer-controls button:active { transform: scale(0.92); }
@@ -394,135 +198,90 @@
         .timer-input { display: flex; gap: 8px; justify-content: center; margin-top: 12px; align-items: center; }
         .timer-input input { width: 60px; padding: 6px; border: 1px solid #ddd; border-radius: 8px; text-align: center; font-size: 18px; }
 
-        /* 世界时钟 */
         .world-clock-list { display: flex; flex-direction: column; gap: 8px; }
         .world-clock-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #f0f0f0; }
         .world-clock-item .city { font-weight: 600; color: #1a1a2e; }
         .world-clock-item .time { font-weight: 300; font-size: 18px; }
 
         /* 音乐播放器 */
-        .music-player .upload-area { margin-bottom: 16px; }
-        .music-player .upload-area input[type="file"] { display: none; }
-        .music-player .upload-area label {
-            display: inline-block;
-            padding: 8px 20px;
-            background: #e65100;
-            color: #fff;
-            border-radius: 30px;
-            cursor: pointer;
-            font-weight: 600;
+        .music-player .tab-bar {
+            display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap;
         }
-        .music-player .playlist { margin-top: 12px; }
+        .music-player .tab-bar .tab {
+            padding: 6px 14px; border-radius: 20px; background: #eee;
+            cursor: pointer; font-weight: 500; font-size: 14px; transition: all 0.2s;
+        }
+        .music-player .tab-bar .tab.active { background: #e65100; color: #fff; }
+        .music-player .tab-content { display: none; }
+        .music-player .tab-content.active { display: block; }
         .music-player .playlist .track {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px solid #f0f0f0;
-            align-items: center;
+            display: flex; justify-content: space-between; padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0; align-items: center;
         }
         .music-player .playlist .track .name { font-weight: 500; flex: 1; }
         .music-player .playlist .track .controls button {
-            background: none;
-            border: none;
-            font-size: 20px;
-            cursor: pointer;
-            padding: 0 6px;
+            background: none; border: none; font-size: 20px; cursor: pointer; padding: 0 6px;
         }
         .music-player .playback-controls {
-            display: flex;
-            gap: 16px;
-            justify-content: center;
-            padding: 12px 0;
+            display: flex; gap: 16px; justify-content: center; padding: 12px 0;
         }
         .music-player .playback-controls button {
-            background: none;
-            border: none;
-            font-size: 28px;
-            cursor: pointer;
-            padding: 0 8px;
-            color: #1a1a2e;
+            background: none; border: none; font-size: 28px; cursor: pointer; padding: 0 8px; color: #1a1a2e;
         }
         .music-player .playback-controls button:active { transform: scale(0.8); }
         .music-player .current-track { text-align: center; font-size: 14px; color: #888; margin-bottom: 8px; }
+        .music-iframe { width: 100%; height: 400px; border: none; border-radius: 12px; background: #fff; }
 
-        /* 电话 */
-        .phone-dialer { display: flex; flex-direction: column; align-items: center; }
-        .phone-dialer .number-display {
-            width: 100%;
-            padding: 12px;
-            text-align: center;
-            font-size: 32px;
-            font-weight: 300;
-            letter-spacing: 4px;
-            background: #fff;
-            border-radius: 12px;
-            margin-bottom: 16px;
-            min-height: 60px;
-            border: 1px solid #eee;
+        /* 地图 */
+        .map-tabs {
+            display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap;
         }
-        .phone-dialer .dial-pad {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            width: 100%;
-            max-width: 280px;
+        .map-tabs .tab {
+            padding: 6px 14px; border-radius: 20px; background: #eee;
+            cursor: pointer; font-weight: 500; font-size: 14px; transition: all 0.2s;
         }
-        .phone-dialer .dial-pad button {
-            padding: 16px 0;
-            border: none;
-            border-radius: 50%;
-            background: #f0f0f0;
-            font-size: 24px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.15s;
-            aspect-ratio: 1;
-        }
-        .phone-dialer .dial-pad button:active { background: #ddd; transform: scale(0.92); }
-        .phone-dialer .dial-pad .call-btn { background: #4caf50; color: #fff; }
-        .phone-dialer .dial-pad .call-btn:active { background: #388e3c; }
-        .phone-dialer .dial-pad .delete-btn { background: #ff3b30; color: #fff; }
-        .phone-dialer .dial-pad .delete-btn:active { background: #c62828; }
-        .phone-dialer .action-row { margin-top: 16px; display: flex; gap: 16px; }
-        .phone-dialer .action-row button { padding: 8px 24px; border: none; border-radius: 30px; font-weight: 600; cursor: pointer; }
-        .phone-dialer .action-row .sms-btn { background: #2979ff; color: #fff; }
-        .phone-dialer .action-row .sms-btn:active { transform: scale(0.92); }
+        .map-tabs .tab.active { background: #e65100; color: #fff; }
+        .map-frame { width: 100%; height: 500px; border: none; border-radius: 12px; background: #fff; }
 
-        /* 浏览器 */
-        .browser-bar {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 12px;
-            align-items: center;
+        /* 设置 */
+        .setting-group {
+            margin-bottom: 24px;
+            border-bottom: 1px solid #e8e8e8;
+            padding-bottom: 16px;
         }
-        .browser-bar input {
-            flex: 1;
-            padding: 8px 14px;
-            border: 1px solid #ddd;
-            border-radius: 20px;
-            font-size: 14px;
-            outline: none;
-            background: #fff;
+        .setting-group .setting-title {
+            font-weight: 600; font-size: 16px; color: #1a1a2e; margin-bottom: 12px;
         }
-        .browser-bar input:focus { border-color: #e65100; }
-        .browser-bar button {
-            padding: 8px 16px;
-            border: none;
-            border-radius: 20px;
-            background: #e65100;
-            color: #fff;
-            font-weight: 600;
-            cursor: pointer;
+        .setting-row {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 8px 0;
         }
-        .browser-bar button:active { transform: scale(0.92); }
-        .browser-frame { flex: 1; border: none; border-radius: 12px; overflow: hidden; background: #fff; min-height: 400px; }
-        .browser-frame iframe { width: 100%; height: 100%; border: none; }
+        .setting-row .label { font-size: 14px; color: #333; }
+        .setting-row input[type="range"] { width: 140px; }
+        .setting-row .value { font-size: 14px; color: #888; min-width: 36px; text-align: right; }
+        .setting-row .btn {
+            padding: 6px 18px; border: none; border-radius: 20px;
+            background: #e65100; color: #fff; cursor: pointer; font-weight: 600;
+        }
+        .setting-row .btn:active { transform: scale(0.92); }
+        .setting-row .btn-secondary { background: #888; }
+        .setting-password-input { display: flex; gap: 8px; align-items: center; }
+        .setting-password-input input {
+            padding: 6px 12px; border: 1px solid #ddd; border-radius: 8px;
+            font-size: 14px; width: 120px; outline: none;
+        }
+        .setting-password-input input:focus { border-color: #e65100; }
+        .setting-password-input button {
+            padding: 6px 16px; border: none; border-radius: 8px;
+            background: #e65100; color: #fff; cursor: pointer; font-weight: 600;
+        }
+        .setting-password-input button:active { transform: scale(0.92); }
 
-        /* 其他已有样式保持不变 */
+        /* 其他已有样式... (保持简洁) */
         .calc-display { background: #1a1a2e; color: #fff; border-radius: 16px; padding: 18px 20px 12px; margin-bottom: 16px; text-align: right; min-height: 90px; display: flex; flex-direction: column; justify-content: flex-end; }
         .calc-display .expr { font-size: 18px; color: #aaa; min-height: 28px; word-break: break-all; }
         .calc-display .result { font-size: 42px; font-weight: 300; letter-spacing: 1px; }
-        .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+        .calc-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; }
         .calc-grid button { padding: 18px 0; border: none; border-radius: 14px; font-size: 24px; font-weight: 500; cursor: pointer; transition: all 0.15s; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
         .calc-grid button:active { transform: scale(0.92); background: #eee; }
         .calc-grid .op { background: #fff3e0; color: #e65100; }
@@ -593,20 +352,15 @@
         .text-center { text-align: center; }
 
         .drag-clone {
-            position: fixed;
-            pointer-events: none;
-            z-index: 9999;
-            opacity: 0.85;
-            transform: scale(1.08) rotate(-2deg);
+            position: fixed; pointer-events: none; z-index: 9999;
+            opacity: 0.85; transform: scale(1.08) rotate(-2deg);
             box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-            border-radius: 18px;
-            padding: 4px;
-            background: rgba(255,255,255,0.3);
-            backdrop-filter: blur(4px);
+            border-radius: 18px; padding: 4px;
+            background: rgba(255,255,255,0.3); backdrop-filter: blur(4px);
         }
         .drag-clone .icon { width: 60px; height: 60px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 32px; color: #fff; box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
         .drag-clone .label { display: none; }
-        .drop-zone { border: 2px dashed #e65100; border-radius: 16px; background: rgba(230, 81, 0, 0.08); transform: scale(0.95); transition: all 0.15s; }
+        .drop-zone { border: 2px dashed #e65100; border-radius: 16px; background: rgba(230,81,0,0.08); transform: scale(0.95); transition: all 0.15s; }
 
         @media (max-width: 440px) {
             body { padding: 0; background: #f5f5f5; align-items: stretch; }
@@ -652,7 +406,6 @@
 
         <div class="dock" id="dock"></div>
 
-        <!-- 应用窗口容器 -->
         <div id="appContainer"></div>
 
         <!-- 锁屏 -->
@@ -670,16 +423,12 @@
                 <button class="cancel-btn" id="lockCancelBtn">取消</button>
             </div>
             <div class="lock-status" id="lockStatus">请输入密码</div>
-            <div class="set-password-area">
-                <input type="password" id="setPassInput" placeholder="新密码(4位数字)" maxlength="4" inputmode="numeric" pattern="[0-9]*">
-                <button id="setPassBtn">设定密码</button>
-            </div>
         </div>
     </div>
 
     <script>
         // ============================================================
-        //  NarutoOS - 完整逻辑 (含新增应用)
+        //  NarutoOS - 完整逻辑 (含地图提供商、音乐在线平台、设置)
         // ============================================================
 
         const APPS = [
@@ -698,10 +447,10 @@
             { id: 'weather', name: '天气', emoji: '🌤️', color: 'icon-deeporange' },
             { id: 'messages', name: '信息', emoji: '💬', color: 'icon-lime' },
             { id: 'mail', name: '邮件', emoji: '✉️', color: 'icon-brown' },
-            // 新增
             { id: 'phone', name: '电话', emoji: '📞', color: 'icon-green' },
             { id: 'music', name: '音乐', emoji: '🎵', color: 'icon-purple' },
-            { id: 'browser', name: '浏览器', emoji: '🌐', color: 'icon-blue' }
+            { id: 'browser', name: '浏览器', emoji: '🌐', color: 'icon-blue' },
+            { id: 'settings', name: '设置', emoji: '⚙️', color: 'icon-grey' }
         ];
 
         const DOCK_APPS = ['calculator', 'calendar', 'clock', 'messages'];
@@ -749,7 +498,7 @@
 
         // ========== 锁屏 ==========
         let isLocked = false;
-        let lockPassword = getStorage('lockPassword', ''); // 空表示未设置
+        let lockPassword = getStorage('lockPassword', '');
 
         const lockScreen = document.getElementById('lockScreen');
         const lockBtn = document.getElementById('lockBtn');
@@ -757,8 +506,6 @@
         const lockCancelBtn = document.getElementById('lockCancelBtn');
         const lockStatus = document.getElementById('lockStatus');
         const pinInputs = [document.getElementById('pin1'), document.getElementById('pin2'), document.getElementById('pin3'), document.getElementById('pin4')];
-        const setPassInput = document.getElementById('setPassInput');
-        const setPassBtn = document.getElementById('setPassBtn');
 
         function lockPhone() {
             if (lockPassword) {
@@ -769,7 +516,7 @@
                 lockStatus.textContent = '请输入密码';
                 pinInputs[0].focus();
             } else {
-                alert('请先设定锁屏密码 (在锁屏界面下方设置)');
+                alert('请先在“设置”中设定锁屏密码');
             }
         }
 
@@ -789,76 +536,38 @@
         }
 
         lockBtn.addEventListener('click', () => {
-            if (isLocked) {
-                // 如果已锁定，点击锁图标可解锁？这里我们只锁定，解锁通过输入密码
-                return;
-            }
+            if (isLocked) return;
             lockPhone();
         });
 
         unlockBtn.addEventListener('click', unlockPhone);
-
         lockCancelBtn.addEventListener('click', () => {
-            if (isLocked) {
-                // 取消锁定，但需要验证密码？为了安全，取消只是关闭锁屏但保持锁定状态？这里我们允许取消但保持锁定
-                // 实际上，取消按钮用于关闭锁屏？不符合安全，我们改为：取消清空输入
-                pinInputs.forEach(inp => inp.value = '');
-                lockStatus.textContent = '请输入密码';
-                pinInputs[0].focus();
-            }
+            pinInputs.forEach(inp => inp.value = '');
+            lockStatus.textContent = '请输入密码';
+            pinInputs[0].focus();
         });
 
-        // 自动聚焦下一个输入框
         pinInputs.forEach((inp, idx) => {
             inp.addEventListener('input', () => {
-                if (inp.value.length === 1 && idx < 3) {
-                    pinInputs[idx+1].focus();
-                }
+                if (inp.value.length === 1 && idx < 3) pinInputs[idx+1].focus();
             });
             inp.addEventListener('keydown', (e) => {
-                if (e.key === 'Backspace' && inp.value.length === 0 && idx > 0) {
-                    pinInputs[idx-1].focus();
-                }
-                if (e.key === 'Enter') {
-                    unlockPhone();
-                }
+                if (e.key === 'Backspace' && inp.value.length === 0 && idx > 0) pinInputs[idx-1].focus();
+                if (e.key === 'Enter') unlockPhone();
             });
         });
-
-        // 设置密码
-        setPassBtn.addEventListener('click', () => {
-            const newPass = setPassInput.value.trim();
-            if (newPass.length === 4 && /^\d{4}$/.test(newPass)) {
-                lockPassword = newPass;
-                setStorage('lockPassword', lockPassword);
-                setPassInput.value = '';
-                alert('密码已设定为 ' + lockPassword);
-                // 如果当前未锁定，可锁定测试
-            } else {
-                alert('请输入4位数字密码');
-            }
-        });
-
-        // 如果已设置密码，锁屏图标可用
-        if (lockPassword) {
-            lockBtn.style.opacity = '1';
-        }
 
         // 全局拦截点击应用时，若锁屏则阻止
         document.addEventListener('click', (e) => {
             if (isLocked) {
                 const target = e.target.closest('.app-item') || e.target.closest('.app-window') || e.target.closest('.dock');
                 if (target) {
-                    e.preventDefault();
-                    e.stopPropagation();
+                    e.preventDefault(); e.stopPropagation();
                     lockStatus.textContent = '请先解锁';
                     return false;
                 }
             }
         }, true);
-
-        // 修改 openApp 函数，加入锁屏判断
-        const originalOpenApp = window.openApp; // 暂存
 
         // ========== 渲染函数 ==========
         function createAppElement(app, isDock = false) {
@@ -866,18 +575,12 @@
             div.className = 'app-item';
             div.dataset.appId = app.id;
             div.innerHTML = `
-                <div class="icon ${app.color}">
-                    ${app.emoji}
-                    ${app.badge ? `<span class="badge">${app.badge}</span>` : ''}
-                </div>
+                <div class="icon ${app.color}">${app.emoji}${app.badge ? `<span class="badge">${app.badge}</span>` : ''}</div>
                 ${!isDock ? `<div class="label">${app.name}</div>` : ''}
             `;
             div.addEventListener('click', (e) => {
                 if (e.target.closest('.app-item') && !div.classList.contains('dragging')) {
-                    if (isLocked) {
-                        lockStatus.textContent = '请先解锁';
-                        return;
-                    }
+                    if (isLocked) { lockStatus.textContent = '请先解锁'; return; }
                     openApp(app.id);
                 }
             });
@@ -887,9 +590,7 @@
         function renderHomeGrid() {
             appGrid.innerHTML = '';
             const sortedApps = homeOrder.map(id => APPS.find(a => a.id === id)).filter(Boolean);
-            sortedApps.forEach(app => {
-                appGrid.appendChild(createAppElement(app, false));
-            });
+            sortedApps.forEach(app => appGrid.appendChild(createAppElement(app, false)));
         }
 
         function renderDock() {
@@ -906,10 +607,7 @@
         }
 
         // ========== 拖拽系统 (与之前一致) ==========
-        let dragState = null;
-        let longPressTimer = null;
-        let isDragging = false;
-
+        let dragState = null, longPressTimer = null, isDragging = false;
         function initDragSystem() {
             const phone = document.getElementById('phone');
             phone.addEventListener('pointerdown', (e) => {
@@ -917,38 +615,26 @@
                 const item = e.target.closest('.app-item');
                 if (!item) return;
                 if (e.target.closest('.app-window')) return;
-
                 const isInGrid = item.closest('#appGrid');
                 const isInDock = item.closest('#dock');
                 if (!isInGrid && !isInDock) return;
-
                 let container, orderArray;
                 if (isInGrid) { container = 'grid'; orderArray = homeOrder; }
                 else { container = 'dock'; orderArray = dockOrder; }
-
                 const rect = item.getBoundingClientRect();
                 const appId = item.dataset.appId;
-
                 dragState = {
-                    element: item,
-                    appId: appId,
-                    container: container,
-                    order: orderArray,
-                    startX: e.clientX,
-                    startY: e.clientY,
-                    moved: false,
+                    element: item, appId, container, order: orderArray,
+                    startX: e.clientX, startY: e.clientY, moved: false,
                     clone: null,
-                    offsetX: e.clientX - rect.left,
-                    offsetY: e.clientY - rect.top,
+                    offsetX: e.clientX - rect.left, offsetY: e.clientY - rect.top,
                     index: orderArray.indexOf(appId)
                 };
-
                 longPressTimer = setTimeout(() => {
                     if (!dragState) return;
                     isDragging = true;
                     const el = dragState.element;
                     el.classList.add('dragging');
-
                     const clone = el.cloneNode(true);
                     clone.className = 'drag-clone';
                     const icon = clone.querySelector('.icon');
@@ -959,7 +645,6 @@
                     }
                     const label = clone.querySelector('.label');
                     if (label) label.style.display = 'none';
-
                     clone.style.left = (e.clientX - dragState.offsetX) + 'px';
                     clone.style.top = (e.clientY - dragState.offsetY) + 'px';
                     document.body.appendChild(clone);
@@ -967,25 +652,18 @@
                     document.body.style.userSelect = 'none';
                 }, 500);
             });
-
             phone.addEventListener('pointermove', (e) => {
                 if (longPressTimer && dragState) {
-                    const dx = e.clientX - dragState.startX;
-                    const dy = e.clientY - dragState.startY;
-                    if (Math.sqrt(dx*dx + dy*dy) > 8) {
-                        clearTimeout(longPressTimer);
-                        longPressTimer = null;
-                    }
+                    const dx = e.clientX - dragState.startX, dy = e.clientY - dragState.startY;
+                    if (Math.sqrt(dx*dx + dy*dy) > 8) { clearTimeout(longPressTimer); longPressTimer = null; }
                 }
                 if (isDragging && dragState && dragState.clone) {
                     e.preventDefault();
                     dragState.clone.style.left = (e.clientX - dragState.offsetX) + 'px';
                     dragState.clone.style.top = (e.clientY - dragState.offsetY) + 'px';
-
                     const target = document.elementFromPoint(e.clientX, e.clientY);
                     const targetItem = target ? target.closest('.app-item') : null;
                     document.querySelectorAll('.app-item.drop-zone').forEach(el => el.classList.remove('drop-zone'));
-
                     if (targetItem && targetItem !== dragState.element) {
                         const targetContainer = targetItem.closest('#appGrid') ? 'grid' : (targetItem.closest('#dock') ? 'dock' : null);
                         if (targetContainer === dragState.container) {
@@ -1011,10 +689,8 @@
                     }
                 }
             });
-
             phone.addEventListener('pointerup', (e) => {
-                clearTimeout(longPressTimer);
-                longPressTimer = null;
+                clearTimeout(longPressTimer); longPressTimer = null;
                 if (isDragging && dragState) {
                     if (dragState.clone) dragState.clone.remove();
                     if (dragState.element) dragState.element.classList.remove('dragging');
@@ -1023,8 +699,7 @@
                     if (dragState.container === 'grid') setStorage('homeOrder', homeOrder);
                     else setStorage('dockOrder', dockOrder);
                     renderAll();
-                    isDragging = false;
-                    dragState = null;
+                    isDragging = false; dragState = null;
                 } else {
                     if (dragState) {
                         if (dragState.element) dragState.element.classList.remove('dragging');
@@ -1034,7 +709,6 @@
                     document.body.style.userSelect = '';
                 }
             });
-
             phone.addEventListener('pointercancel', () => {
                 clearTimeout(longPressTimer);
                 if (isDragging && dragState) {
@@ -1043,8 +717,7 @@
                     document.querySelectorAll('.app-item.drop-zone').forEach(el => el.classList.remove('drop-zone'));
                     document.body.style.userSelect = '';
                     renderAll();
-                    isDragging = false;
-                    dragState = null;
+                    isDragging = false; dragState = null;
                 }
             });
         }
@@ -1063,11 +736,9 @@
             }
             const app = APPS.find(a => a.id === appId);
             if (!app) return;
-
             const win = document.createElement('div');
             win.className = 'app-window active';
             win.dataset.app = appId;
-
             const header = document.createElement('div');
             header.className = 'app-header';
             header.innerHTML = `
@@ -1075,18 +746,15 @@
                 <button class="close-btn" id="closeApp_${appId}">✕</button>
             `;
             win.appendChild(header);
-
             const body = document.createElement('div');
             body.className = 'app-body';
             body.id = `appBody_${appId}`;
             win.appendChild(body);
             appContainer.appendChild(win);
-
             document.getElementById(`closeApp_${appId}`).addEventListener('click', (e) => {
                 e.stopPropagation();
                 closeApp(appId);
             });
-
             renderAppContent(appId, body);
             openApps.push(appId);
         }
@@ -1096,19 +764,11 @@
             if (win) {
                 win.style.display = 'none';
                 win.classList.remove('active');
-                setTimeout(() => {
-                    if (win.parentNode) win.parentNode.removeChild(win);
-                }, 300);
+                setTimeout(() => { if (win.parentNode) win.parentNode.removeChild(win); }, 300);
             }
             openApps = openApps.filter(id => id !== appId);
-            if (appId === 'camera' && window._cameraCleanup) {
-                window._cameraCleanup();
-                window._cameraCleanup = null;
-            }
-            if (appId === 'music' && window._musicCleanup) {
-                window._musicCleanup();
-                window._musicCleanup = null;
-            }
+            if (appId === 'camera' && window._cameraCleanup) { window._cameraCleanup(); window._cameraCleanup = null; }
+            if (appId === 'music' && window._musicCleanup) { window._musicCleanup(); window._musicCleanup = null; }
         }
 
         // ========== 渲染各应用内容 ==========
@@ -1132,11 +792,12 @@
                 case 'phone': renderPhone(body); break;
                 case 'music': renderMusic(body); break;
                 case 'browser': renderBrowser(body); break;
+                case 'settings': renderSettings(body); break;
                 default: body.innerHTML = '<div class="empty-state"><span class="big-emoji">🚧</span>开发中...</div>';
             }
         }
 
-        // ----- 已有应用 (与之前相同，但为了完整性保留) -----
+        // ----- 已有应用 (与之前一致，但保留完整) -----
         function renderCalculator(body) {
             let expr = '', result = '0', justEvaluated = false;
             const container = document.createElement('div');
@@ -1190,12 +851,9 @@
 
         // ----- 时钟 (含闹钟、秒表、计时器、世界时钟) -----
         function renderClock(body) {
-            // 使用Tab切换
             const container = document.createElement('div');
             container.className = 'clock-main';
             body.appendChild(container);
-
-            // 存储状态
             let alarms = getStorage('alarms', []);
             let stopwatchRunning = false, stopwatchTime = 0, stopwatchInterval = null;
             let timerRunning = false, timerRemaining = 0, timerInterval = null, timerTotal = 0;
@@ -1203,7 +861,6 @@
             function renderClockUI(activeTab = 'alarm') {
                 const now = new Date();
                 const h = String(now.getHours()).padStart(2,'0'), m = String(now.getMinutes()).padStart(2,'0'), s = String(now.getSeconds()).padStart(2,'0');
-
                 let html = `
                     <div class="time-display">${h}:${m}:${s}</div>
                     <div class="date-display">${formatDate(now)}</div>
@@ -1216,14 +873,9 @@
                     <div id="clockTabContent"></div>
                 `;
                 container.innerHTML = html;
-
-                // 绑定Tab切换
                 container.querySelectorAll('.tab').forEach(tab => {
-                    tab.addEventListener('click', () => {
-                        renderClockUI(tab.dataset.tab);
-                    });
+                    tab.addEventListener('click', () => renderClockUI(tab.dataset.tab));
                 });
-
                 const content = document.getElementById('clockTabContent');
                 switch (activeTab) {
                     case 'alarm': renderAlarmTab(content); break;
@@ -1233,7 +885,6 @@
                 }
             }
 
-            // 闹钟Tab
             function renderAlarmTab(content) {
                 let html = `<div id="alarmList"></div><div class="add-alarm"><input type="time" id="alarmTime" value="08:00"><button id="addAlarm">添加</button></div>`;
                 content.innerHTML = html;
@@ -1251,7 +902,6 @@
                 document.getElementById('addAlarm').addEventListener('click', ()=>{ const inp = document.getElementById('alarmTime'); if(inp.value){ alarms.push({time:inp.value, on:true}); setStorage('alarms', alarms); renderClockUI('alarm'); } });
             }
 
-            // 秒表Tab
             function renderStopwatchTab(content) {
                 const totalSeconds = Math.floor(stopwatchTime / 1000);
                 const minutes = String(Math.floor(totalSeconds / 60)).padStart(2,'0');
@@ -1276,16 +926,13 @@
                         lapsDiv.appendChild(div);
                     });
                 }
-
                 document.getElementById('stopwatchStartStop').addEventListener('click', ()=>{
                     if (stopwatchRunning) {
-                        // 停止
                         stopwatchRunning = false;
                         if (stopwatchInterval) clearInterval(stopwatchInterval);
                         stopwatchInterval = null;
                         renderClockUI('stopwatch');
                     } else {
-                        // 开始
                         stopwatchRunning = true;
                         const startTime = Date.now() - stopwatchTime;
                         stopwatchInterval = setInterval(() => {
@@ -1297,8 +944,7 @@
                 });
                 document.getElementById('stopwatchReset').addEventListener('click', ()=>{
                     if (stopwatchInterval) clearInterval(stopwatchInterval);
-                    stopwatchRunning = false;
-                    stopwatchTime = 0;
+                    stopwatchRunning = false; stopwatchTime = 0;
                     setStorage('stopwatchLaps', []);
                     renderClockUI('stopwatch');
                 });
@@ -1317,7 +963,6 @@
                 });
             }
 
-            // 计时器Tab
             function renderTimerTab(content) {
                 const totalSeconds = Math.floor(timerRemaining / 1000);
                 const minutes = String(Math.floor(totalSeconds / 60)).padStart(2,'0');
@@ -1338,15 +983,12 @@
                 `;
                 document.getElementById('timerStartStop').addEventListener('click', ()=>{
                     if (timerRunning) {
-                        // 暂停
                         timerRunning = false;
                         if (timerInterval) clearInterval(timerInterval);
                         timerInterval = null;
                         renderClockUI('timer');
                     } else {
-                        // 开始
                         if (timerRemaining <= 0) {
-                            // 从输入获取时间
                             const mins = parseInt(document.getElementById('timerMinutes').value) || 0;
                             const secs = parseInt(document.getElementById('timerSeconds').value) || 0;
                             timerTotal = (mins * 60 + secs) * 1000;
@@ -1359,10 +1001,8 @@
                             const elapsed = Date.now() - startTime;
                             timerRemaining = timerTotal - elapsed;
                             if (timerRemaining <= 0) {
-                                timerRemaining = 0;
-                                timerRunning = false;
-                                clearInterval(interval);
-                                timerInterval = null;
+                                timerRemaining = 0; timerRunning = false;
+                                clearInterval(interval); timerInterval = null;
                                 alert('计时结束！');
                                 renderClockUI('timer');
                                 return;
@@ -1375,24 +1015,17 @@
                 });
                 document.getElementById('timerReset').addEventListener('click', ()=>{
                     if (timerInterval) clearInterval(timerInterval);
-                    timerRunning = false;
-                    timerRemaining = 0;
-                    timerTotal = 0;
+                    timerRunning = false; timerRemaining = 0; timerTotal = 0;
                     renderClockUI('timer');
                 });
             }
 
-            // 世界时钟Tab
             function renderWorldTab(content) {
                 const cities = [
-                    { name: '北京', offset: 8 },
-                    { name: '东京', offset: 9 },
-                    { name: '纽约', offset: -4 },
-                    { name: '伦敦', offset: 0 },
-                    { name: '巴黎', offset: 1 },
-                    { name: '悉尼', offset: 10 },
-                    { name: '迪拜', offset: 4 },
-                    { name: '莫斯科', offset: 3 }
+                    { name: '北京', offset: 8 }, { name: '东京', offset: 9 },
+                    { name: '纽约', offset: -4 }, { name: '伦敦', offset: 0 },
+                    { name: '巴黎', offset: 1 }, { name: '悉尼', offset: 10 },
+                    { name: '迪拜', offset: 4 }, { name: '莫斯科', offset: 3 }
                 ];
                 const now = new Date();
                 const localOffset = -now.getTimezoneOffset() / 60;
@@ -1400,16 +1033,13 @@
                 cities.forEach(city => {
                     const diff = city.offset - localOffset;
                     const d = new Date(now.getTime() + diff * 3600 * 1000);
-                    const timeStr = formatTime(d);
-                    html += `<div class="world-clock-item"><span class="city">${city.name}</span><span class="time">${timeStr}</span></div>`;
+                    html += `<div class="world-clock-item"><span class="city">${city.name}</span><span class="time">${formatTime(d)}</span></div>`;
                 });
                 html += '</div>';
                 content.innerHTML = html;
             }
 
             renderClockUI('alarm');
-
-            // 每秒更新时间显示
             const interval = setInterval(() => {
                 const now = new Date();
                 const h = String(now.getHours()).padStart(2,'0'), m = String(now.getMinutes()).padStart(2,'0'), s = String(now.getSeconds()).padStart(2,'0');
@@ -1417,18 +1047,12 @@
                 const dateEl = container.querySelector('.date-display');
                 if (timeEl) timeEl.textContent = `${h}:${m}:${s}`;
                 if (dateEl) dateEl.textContent = formatDate(now);
-                // 检查闹钟
                 const nowStr = `${h}:${m}`;
                 alarms.forEach(alarm => {
                     if (alarm.on && alarm.time === nowStr && s === '00') {
                         alert('⏰ 闹钟响了！ ' + alarm.time);
                     }
                 });
-                // 更新世界时钟如果可见
-                const worldTab = container.querySelector('.tab[data-tab="world"].active');
-                if (worldTab) {
-                    // 简单刷新世界时钟内容，但为了性能，不频繁重绘
-                }
             }, 1000);
             body._clockInterval = interval;
         }
@@ -1617,11 +1241,6 @@
             body.innerHTML = `<div class="iframe-container"><iframe src="https://www.bing.com/translator" loading="lazy" allow="microphone; camera; encrypted-media"></iframe></div><div class="text-muted mt-8 text-center">🌐 由 Bing 翻译提供</div>`;
         }
 
-        // ----- 地图 (百度) -----
-        function renderMap(body) {
-            body.innerHTML = `<div class="iframe-container"><iframe src="https://map.baidu.com/" loading="lazy" allow="geolocation"></iframe></div><div class="text-muted mt-8 text-center">🗺️ 百度地图</div>`;
-        }
-
         // ----- 天气 (中国天气) -----
         function renderWeather(body) {
             body.innerHTML = `<div class="iframe-container"><iframe src="https://e.weather.com.cn/mweather/101044100.shtml" loading="lazy"></iframe></div><div class="text-muted mt-8 text-center">🌤️ 中国天气网</div>`;
@@ -1674,10 +1293,8 @@
                     const subject = document.getElementById('mailSubject').value.trim() || '无主题';
                     const bodyText = document.getElementById('mailBody').value.trim();
                     if (to && bodyText) {
-                        // 使用mailto
                         const mailtoLink = `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyText)}`;
                         window.location.href = mailtoLink;
-                        // 同时保存到本地邮件列表
                         mails.push({from:'我', to, subject, preview: bodyText.slice(0,30), time: new Date().toLocaleString()});
                         setStorage('mails', mails);
                         render();
@@ -1696,8 +1313,6 @@
             }
             render();
         }
-
-        // ===== 新增应用 =====
 
         // ----- 电话 (拨号 + tel) -----
         function renderPhone(body) {
@@ -1718,178 +1333,243 @@
                 </div>
             `;
             body.appendChild(container);
-
             const display = document.getElementById('phoneNumber');
             function updateDisplay() { display.textContent = number || ' '; }
-
             container.querySelectorAll('.dial-pad button').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const digit = btn.dataset.digit;
-                    number += digit;
-                    updateDisplay();
+                btn.addEventListener('click', () => { number += btn.dataset.digit; updateDisplay(); });
+            });
+            document.getElementById('phoneDeleteBtn').addEventListener('click', () => { number = number.slice(0, -1); updateDisplay(); });
+            document.getElementById('phoneCallBtn').addEventListener('click', () => { if (number) window.location.href = 'tel://' + number; else alert('请输入号码'); });
+            document.getElementById('phoneSmsBtn').addEventListener('click', () => { if (number) window.location.href = 'sms://' + number; else alert('请输入号码'); });
+        }
+
+        // ===== 地图 (多提供商) =====
+        function renderMap(body) {
+            const providers = [
+                { name: '高德地图', url: 'https://m.amap.com/' },
+                { name: '百度地图', url: 'https://map.baidu.com/' },
+                { name: '腾讯地图', url: 'https://map.qq.com/m/' },
+                { name: 'Google地图', url: 'https://www.google.com/maps' }
+            ];
+            let currentProvider = 0;
+
+            const container = document.createElement('div');
+            container.innerHTML = `
+                <div class="map-tabs" id="mapTabs">
+                    ${providers.map((p, i) => `<span class="tab ${i===0?'active':''}" data-idx="${i}">${p.name}</span>`).join('')}
+                </div>
+                <iframe class="map-frame" id="mapFrame" src="${providers[0].url}" loading="lazy" allow="geolocation"></iframe>
+            `;
+            body.appendChild(container);
+
+            const frame = document.getElementById('mapFrame');
+            const tabs = container.querySelectorAll('.tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    const idx = parseInt(tab.dataset.idx);
+                    currentProvider = idx;
+                    frame.src = providers[idx].url;
                 });
-            });
-
-            document.getElementById('phoneDeleteBtn').addEventListener('click', () => {
-                number = number.slice(0, -1);
-                updateDisplay();
-            });
-
-            document.getElementById('phoneCallBtn').addEventListener('click', () => {
-                if (number) {
-                    window.location.href = 'tel://' + number;
-                } else {
-                    alert('请输入号码');
-                }
-            });
-
-            document.getElementById('phoneSmsBtn').addEventListener('click', () => {
-                if (number) {
-                    window.location.href = 'sms://' + number;
-                } else {
-                    alert('请输入号码');
-                }
             });
         }
 
-        // ----- 音乐 (上传播放) -----
+        // ===== 音乐 (本地 + 在线平台) =====
         function renderMusic(body) {
+            const platforms = [
+                { name: '本地', type: 'local' },
+                { name: 'QQ音乐', type: 'qq', url: 'https://y.qq.com/m/' },
+                { name: '酷狗音乐', type: 'kugou', url: 'https://m.kugou.com/' },
+                { name: '网易云音乐', type: 'netease', url: 'https://music.163.com/m/' }
+            ];
+            let currentPlatform = 0;
             let playlist = getStorage('musicPlaylist', []);
-            let currentTrack = null;
-            let audio = new Audio();
-            let currentIndex = -1;
+            let currentTrack = null, audio = new Audio(), currentIndex = -1;
+
+            // 本地播放器相关
+            function renderLocalPlayer() {
+                let html = `
+                    <div class="upload-area">
+                        <label for="musicFileInput">📤 上传音乐文件</label>
+                        <input type="file" id="musicFileInput" accept="audio/*" multiple>
+                    </div>
+                    <div class="current-track" id="currentTrackDisplay">${currentTrack ? '正在播放: '+currentTrack : '未播放'}</div>
+                    <div class="playback-controls">
+                        <button id="musicPrev">⏮</button>
+                        <button id="musicPlayPause">▶️</button>
+                        <button id="musicNext">⏭</button>
+                        <button id="musicStop">⏹</button>
+                    </div>
+                    <div class="playlist" id="musicPlaylist"></div>
+                `;
+                return html;
+            }
+
+            function renderOnlinePlayer(url) {
+                return `<iframe class="music-iframe" src="${url}" loading="lazy" allow="autoplay; encrypted-media"></iframe>`;
+            }
 
             function render() {
                 let html = `
                     <div class="music-player">
-                        <div class="upload-area">
-                            <label for="musicFileInput">📤 上传音乐文件</label>
-                            <input type="file" id="musicFileInput" accept="audio/*" multiple>
+                        <div class="tab-bar" id="musicTabBar">
+                            ${platforms.map((p, i) => `<span class="tab ${i===currentPlatform?'active':''}" data-idx="${i}">${p.name}</span>`).join('')}
                         </div>
-                        <div class="current-track" id="currentTrackDisplay">${currentTrack ? '正在播放: '+currentTrack : '未播放'}</div>
-                        <div class="playback-controls">
-                            <button id="musicPrev">⏮</button>
-                            <button id="musicPlayPause">▶️</button>
-                            <button id="musicNext">⏭</button>
-                            <button id="musicStop">⏹</button>
-                        </div>
-                        <div class="playlist" id="musicPlaylist"></div>
+                        <div class="tab-content" id="musicTabContent"></div>
                     </div>
                 `;
                 body.innerHTML = html;
 
-                const list = document.getElementById('musicPlaylist');
-                if (playlist.length === 0) {
-                    list.innerHTML = '<div class="empty-state"><span class="big-emoji">🎵</span>暂无歌曲，请上传</div>';
-                } else {
-                    playlist.forEach((track, idx) => {
-                        const div = document.createElement('div');
-                        div.className = 'track';
-                        const isCurrent = idx === currentIndex;
-                        div.innerHTML = `
-                            <span class="name" style="${isCurrent ? 'color:#e65100;' : ''}">${track.name}</span>
-                            <span class="controls">
-                                <button data-play="${idx}">▶️</button>
-                                <button data-del="${idx}">✕</button>
-                            </span>
-                        `;
-                        list.appendChild(div);
+                const tabBar = document.getElementById('musicTabBar');
+                tabBar.querySelectorAll('.tab').forEach(tab => {
+                    tab.addEventListener('click', () => {
+                        tabBar.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                        tab.classList.add('active');
+                        currentPlatform = parseInt(tab.dataset.idx);
+                        renderContent();
                     });
-                    list.querySelectorAll('[data-play]').forEach(btn => {
-                        btn.addEventListener('click', () => {
-                            const idx = parseInt(btn.dataset.play);
-                            playTrack(idx);
-                        });
-                    });
-                    list.querySelectorAll('[data-del]').forEach(btn => {
-                        btn.addEventListener('click', () => {
-                            const idx = parseInt(btn.dataset.del);
-                            playlist.splice(idx, 1);
-                            setStorage('musicPlaylist', playlist);
-                            if (currentIndex === idx) {
-                                audio.pause();
-                                currentTrack = null;
-                                currentIndex = -1;
-                            } else if (currentIndex > idx) {
-                                currentIndex--;
-                            }
-                            render();
-                        });
-                    });
+                });
+
+                function renderContent() {
+                    const content = document.getElementById('musicTabContent');
+                    const platform = platforms[currentPlatform];
+                    if (platform.type === 'local') {
+                        content.innerHTML = renderLocalPlayer();
+                        // 绑定本地播放器事件
+                        bindLocalEvents(content);
+                    } else {
+                        content.innerHTML = renderOnlinePlayer(platform.url);
+                    }
                 }
 
-                // 文件上传
-                document.getElementById('musicFileInput').addEventListener('change', (e) => {
-                    const files = e.target.files;
-                    for (let file of files) {
-                        if (file.type.startsWith('audio/')) {
-                            const url = URL.createObjectURL(file);
-                            playlist.push({ name: file.name, url: url });
+                function bindLocalEvents(container) {
+                    // 上传
+                    const fileInput = container.querySelector('#musicFileInput');
+                    if (fileInput) {
+                        fileInput.addEventListener('change', (e) => {
+                            const files = e.target.files;
+                            for (let file of files) {
+                                if (file.type.startsWith('audio/')) {
+                                    const url = URL.createObjectURL(file);
+                                    playlist.push({ name: file.name, url: url });
+                                }
+                            }
+                            setStorage('musicPlaylist', playlist);
+                            render();
+                        });
+                    }
+
+                    // 播放列表
+                    const list = container.querySelector('#musicPlaylist');
+                    if (list) {
+                        if (playlist.length === 0) {
+                            list.innerHTML = '<div class="empty-state"><span class="big-emoji">🎵</span>暂无歌曲，请上传</div>';
+                        } else {
+                            playlist.forEach((track, idx) => {
+                                const div = document.createElement('div');
+                                div.className = 'track';
+                                const isCurrent = idx === currentIndex;
+                                div.innerHTML = `
+                                    <span class="name" style="${isCurrent ? 'color:#e65100;' : ''}">${track.name}</span>
+                                    <span class="controls">
+                                        <button data-play="${idx}">▶️</button>
+                                        <button data-del="${idx}">✕</button>
+                                    </span>
+                                `;
+                                list.appendChild(div);
+                            });
+                            list.querySelectorAll('[data-play]').forEach(btn => {
+                                btn.addEventListener('click', () => {
+                                    const idx = parseInt(btn.dataset.play);
+                                    playTrack(idx);
+                                });
+                            });
+                            list.querySelectorAll('[data-del]').forEach(btn => {
+                                btn.addEventListener('click', () => {
+                                    const idx = parseInt(btn.dataset.del);
+                                    playlist.splice(idx, 1);
+                                    setStorage('musicPlaylist', playlist);
+                                    if (currentIndex === idx) { audio.pause(); currentTrack = null; currentIndex = -1; }
+                                    else if (currentIndex > idx) currentIndex--;
+                                    render();
+                                });
+                            });
                         }
                     }
-                    setStorage('musicPlaylist', playlist);
-                    render();
-                });
 
-                // 控制按钮
-                document.getElementById('musicPlayPause').addEventListener('click', () => {
-                    if (audio.paused) {
-                        if (currentTrack) audio.play();
-                        else if (playlist.length > 0) playTrack(0);
-                    } else {
-                        audio.pause();
+                    // 控制按钮
+                    const playPause = container.querySelector('#musicPlayPause');
+                    const stopBtn = container.querySelector('#musicStop');
+                    const prevBtn = container.querySelector('#musicPrev');
+                    const nextBtn = container.querySelector('#musicNext');
+                    if (playPause) {
+                        playPause.addEventListener('click', () => {
+                            if (audio.paused) {
+                                if (currentTrack) audio.play();
+                                else if (playlist.length > 0) playTrack(0);
+                            } else {
+                                audio.pause();
+                            }
+                        });
                     }
-                });
-                document.getElementById('musicStop').addEventListener('click', () => {
-                    audio.pause();
-                    audio.currentTime = 0;
-                    document.getElementById('currentTrackDisplay').textContent = currentTrack ? '已停止: '+currentTrack : '未播放';
-                });
-                document.getElementById('musicPrev').addEventListener('click', () => {
-                    if (playlist.length === 0) return;
-                    let idx = currentIndex - 1;
-                    if (idx < 0) idx = playlist.length - 1;
-                    playTrack(idx);
-                });
-                document.getElementById('musicNext').addEventListener('click', () => {
-                    if (playlist.length === 0) return;
-                    let idx = currentIndex + 1;
-                    if (idx >= playlist.length) idx = 0;
-                    playTrack(idx);
-                });
+                    if (stopBtn) {
+                        stopBtn.addEventListener('click', () => {
+                            audio.pause();
+                            audio.currentTime = 0;
+                            const display = container.querySelector('#currentTrackDisplay');
+                            if (display) display.textContent = currentTrack ? '已停止: '+currentTrack : '未播放';
+                        });
+                    }
+                    if (prevBtn) {
+                        prevBtn.addEventListener('click', () => {
+                            if (playlist.length === 0) return;
+                            let idx = currentIndex - 1;
+                            if (idx < 0) idx = playlist.length - 1;
+                            playTrack(idx);
+                        });
+                    }
+                    if (nextBtn) {
+                        nextBtn.addEventListener('click', () => {
+                            if (playlist.length === 0) return;
+                            let idx = currentIndex + 1;
+                            if (idx >= playlist.length) idx = 0;
+                            playTrack(idx);
+                        });
+                    }
+                }
 
+                function playTrack(idx) {
+                    if (idx < 0 || idx >= playlist.length) return;
+                    const track = playlist[idx];
+                    audio.src = track.url;
+                    audio.play();
+                    currentTrack = track.name;
+                    currentIndex = idx;
+                    const display = document.querySelector('#currentTrackDisplay');
+                    if (display) display.textContent = '正在播放: '+track.name;
+                    render();
+                    audio.onended = () => {
+                        let next = currentIndex + 1;
+                        if (next >= playlist.length) next = 0;
+                        playTrack(next);
+                    };
+                }
+
+                renderContent();
                 // 清理
                 window._musicCleanup = () => {
                     audio.pause();
                     audio.src = '';
                 };
             }
-
-            function playTrack(idx) {
-                if (idx < 0 || idx >= playlist.length) return;
-                const track = playlist[idx];
-                audio.src = track.url;
-                audio.play();
-                currentTrack = track.name;
-                currentIndex = idx;
-                document.getElementById('currentTrackDisplay').textContent = '正在播放: '+track.name;
-                render();
-                // 自动播放下一个
-                audio.onended = () => {
-                    let next = currentIndex + 1;
-                    if (next >= playlist.length) next = 0;
-                    playTrack(next);
-                };
-            }
-
             render();
         }
 
-        // ----- 浏览器 (地址栏 + iframe, 默认百度首页) -----
+        // ----- 浏览器 (默认百度) -----
         function renderBrowser(body) {
             const defaultUrl = 'https://www.baidu.com/from=844b/ssid=0/s?word=%E7%99%BE%E5%BA%A6&sa=tb&ts=0&t_kt=0&ie=utf-8&ms=1&rsv_t=acd1LJnWt40uIJlLGFtOBIzi%252F31n2IO2Mky8kWfJhcLQWWkP4zS5NWlc0g&rsv_pq=10925249139932774113&ss=100&sugid=278181384433411&rfrom=1024439f&rchannel=1024439j&rqid=10925249139932774113';
             let currentUrl = defaultUrl;
-
             const container = document.createElement('div');
             container.style.display = 'flex';
             container.style.flexDirection = 'column';
@@ -1905,44 +1585,163 @@
                 </div>
             `;
             body.appendChild(container);
-
             const urlInput = document.getElementById('browserUrl');
             const frame = container.querySelector('iframe');
             const goBtn = document.getElementById('browserGo');
             const refreshBtn = document.getElementById('browserRefresh');
-
             function navigate(url) {
-                if (!url.startsWith('http://') && !url.startsWith('https://')) {
-                    url = 'https://' + url;
-                }
+                if (!url.startsWith('http://') && !url.startsWith('https://')) url = 'https://' + url;
                 currentUrl = url;
                 frame.src = url;
                 urlInput.value = url;
             }
+            goBtn.addEventListener('click', () => { const val = urlInput.value.trim(); if (val) navigate(val); });
+            urlInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { const val = urlInput.value.trim(); if (val) navigate(val); } });
+            refreshBtn.addEventListener('click', () => { frame.src = currentUrl; });
+            frame.src = defaultUrl;
+        }
 
-            goBtn.addEventListener('click', () => {
-                const val = urlInput.value.trim();
-                if (val) navigate(val);
+        // ===== 设置 (亮度、音量、锁屏密码、一键锁定) =====
+        function renderSettings(body) {
+            // 从存储中读取亮度 (0-1) 和音量 (0-1)
+            let brightness = getStorage('brightness', 0.8);
+            let volume = getStorage('volume', 0.6);
+
+            // 应用到页面
+            function applyBrightness(val) {
+                brightness = val;
+                setStorage('brightness', brightness);
+                // 通过调节手机壳背景透明度模拟亮度，或使用滤镜
+                const phone = document.getElementById('phone');
+                // 我们调节 phone 的背景亮度，使用滤镜
+                const v = Math.round(brightness * 100);
+                phone.style.filter = `brightness(${v}%)`;
+            }
+            function applyVolume(val) {
+                volume = val;
+                setStorage('volume', volume);
+                // 音量影响所有audio元素
+                document.querySelectorAll('audio').forEach(a => a.volume = volume);
+                // 也存储到全局变量，方便新创建的audio
+                window._globalVolume = volume;
+            }
+            // 初始化
+            applyBrightness(brightness);
+            applyVolume(volume);
+            // 监听到新audio
+            const origAudio = window.Audio;
+            window.Audio = function() {
+                const a = new origAudio();
+                a.volume = window._globalVolume || 0.6;
+                return a;
+            };
+
+            // 渲染设置界面
+            const container = document.createElement('div');
+            container.innerHTML = `
+                <div class="setting-group">
+                    <div class="setting-title">💡 亮度</div>
+                    <div class="setting-row">
+                        <span class="label">亮度</span>
+                        <input type="range" id="brightnessSlider" min="0.1" max="1" step="0.05" value="${brightness}">
+                        <span class="value" id="brightnessValue">${Math.round(brightness*100)}%</span>
+                    </div>
+                </div>
+                <div class="setting-group">
+                    <div class="setting-title">🔊 音量</div>
+                    <div class="setting-row">
+                        <span class="label">音量</span>
+                        <input type="range" id="volumeSlider" min="0" max="1" step="0.05" value="${volume}">
+                        <span class="value" id="volumeValue">${Math.round(volume*100)}%</span>
+                    </div>
+                </div>
+                <div class="setting-group">
+                    <div class="setting-title">🔐 锁屏密码</div>
+                    <div class="setting-row">
+                        <div class="setting-password-input">
+                            <input type="password" id="settingsNewPassword" placeholder="4位数字" maxlength="4" inputmode="numeric" pattern="[0-9]*">
+                            <button id="settingsSetPassword">设定</button>
+                            <button id="settingsClearPassword" class="btn-secondary" style="background:#888;">清除</button>
+                        </div>
+                    </div>
+                    <div class="setting-row" style="margin-top:8px;">
+                        <span class="label">当前状态: ${lockPassword ? '已设置' : '未设置'}</span>
+                        <button class="btn" id="settingsLockNow">🔒 立即锁定</button>
+                    </div>
+                </div>
+                <div class="setting-group">
+                    <div class="setting-title">ℹ️ 关于</div>
+                    <div class="setting-row">
+                        <span class="label">NarutoOS v2.0</span>
+                    </div>
+                </div>
+            `;
+            body.appendChild(container);
+
+            // 亮度滑块
+            const brightnessSlider = document.getElementById('brightnessSlider');
+            const brightnessValue = document.getElementById('brightnessValue');
+            brightnessSlider.addEventListener('input', () => {
+                const val = parseFloat(brightnessSlider.value);
+                brightnessValue.textContent = Math.round(val*100) + '%';
+                applyBrightness(val);
             });
 
-            urlInput.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter') {
-                    const val = urlInput.value.trim();
-                    if (val) navigate(val);
+            // 音量滑块
+            const volumeSlider = document.getElementById('volumeSlider');
+            const volumeValue = document.getElementById('volumeValue');
+            volumeSlider.addEventListener('input', () => {
+                const val = parseFloat(volumeSlider.value);
+                volumeValue.textContent = Math.round(val*100) + '%';
+                applyVolume(val);
+            });
+
+            // 设置密码
+            document.getElementById('settingsSetPassword').addEventListener('click', () => {
+                const newPass = document.getElementById('settingsNewPassword').value.trim();
+                if (newPass.length === 4 && /^\d{4}$/.test(newPass)) {
+                    lockPassword = newPass;
+                    setStorage('lockPassword', lockPassword);
+                    alert('密码已设定为 ' + lockPassword);
+                    document.getElementById('settingsNewPassword').value = '';
+                    // 更新状态显示
+                    const statusEl = container.querySelector('.setting-row .label');
+                    if (statusEl) statusEl.textContent = '当前状态: 已设置';
+                } else {
+                    alert('请输入4位数字密码');
                 }
             });
 
-            refreshBtn.addEventListener('click', () => {
-                frame.src = currentUrl;
+            // 清除密码
+            document.getElementById('settingsClearPassword').addEventListener('click', () => {
+                if (confirm('确定清除锁屏密码吗？')) {
+                    lockPassword = '';
+                    setStorage('lockPassword', '');
+                    alert('密码已清除');
+                    const statusEl = container.querySelector('.setting-row .label');
+                    if (statusEl) statusEl.textContent = '当前状态: 未设置';
+                    // 如果当前锁屏，解锁
+                    if (isLocked) {
+                        isLocked = false;
+                        lockScreen.classList.remove('active');
+                        lockBtn.textContent = '🔓';
+                    }
+                }
             });
 
-            // 默认加载
-            frame.src = defaultUrl;
+            // 立即锁定
+            document.getElementById('settingsLockNow').addEventListener('click', () => {
+                if (lockPassword) {
+                    lockPhone();
+                } else {
+                    alert('请先设定锁屏密码');
+                }
+            });
         }
 
         // ========== 初始化 ==========
         renderAll();
-        console.log('🍥 NarutoOS 已启动! (含电话、音乐、浏览器，时钟四合一，锁屏密码，mailto/sms/tel支持)');
+        console.log('🍥 NarutoOS 已启动! (地图多提供商、音乐多平台、设置含亮度/音量/密码)');
     </script>
 </body>
 </html>
