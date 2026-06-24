@@ -6,242 +6,748 @@
     <title>NarutoOS</title>
     <style>
         /* ===== 全局重置 & 基础 ===== */
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, "PingFang SC", "Helvetica Neue", sans-serif; user-select: none; }
-        body { background: #1a1a2e; display: flex; justify-content: center; align-items: center; min-height: 100vh; min-height: 100dvh; padding: 16px; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, "PingFang SC", "Helvetica Neue", sans-serif;
+            user-select: none;
+        }
+        body {
+            background: #1a1a2e;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            min-height: 100dvh;
+            padding: 16px;
+        }
         .phone {
-            width: 390px; max-width: 100%; height: 780px; max-height: 95vh; max-height: 95dvh;
-            background: #f5f5f5; border-radius: 44px; padding: 14px 14px 8px 14px;
+            width: 390px;
+            max-width: 100%;
+            height: 780px;
+            max-height: 95vh;
+            max-height: 95dvh;
+            background: #f5f5f5;
+            border-radius: 44px;
+            padding: 14px 14px 8px 14px;
             box-shadow: 0 30px 80px rgba(0,0,0,0.7), inset 0 0 0 2px #3a3a4a;
-            position: relative; display: flex; flex-direction: column; overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: filter 0.2s, background 0.3s;
         }
-        .notch {
-            position: absolute; top: 14px; left: 50%; transform: translateX(-50%);
-            width: 150px; height: 28px; background: #1a1a2e; border-radius: 0 0 18px 18px;
-            z-index: 100; display: flex; align-items: center; justify-content: center; gap: 8px;
+        .phone.dark-theme {
+            background: #1a1a2e;
+            color: #eee;
         }
-        .notch .cam { width: 8px; height: 8px; background: #2d2d44; border-radius: 50%; border: 1px solid #3a3a5a; }
-        .notch .speaker { width: 50px; height: 5px; background: #2d2d44; border-radius: 4px; }
-
-        .status-bar {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 6px 12px 4px 12px; font-size: 13px; font-weight: 600;
-            color: #1a1a2e; background: transparent; flex-shrink: 0; position: relative; z-index: 50;
+        .phone.dark-theme .status-bar,
+        .phone.dark-theme .desktop-date,
+        .phone.dark-theme .app-item .label,
+        .phone.dark-theme .dock {
+            color: #eee;
         }
-        .status-bar .time { font-weight: 700; letter-spacing: 0.5px; }
-        .status-bar .icons { display: flex; gap: 6px; align-items: center; font-size: 14px; }
-        .status-bar .lock-btn {
-            background: none; border: none; font-size: 16px; cursor: pointer; padding: 0 4px; color: #1a1a2e;
+        .phone.dark-theme .dock {
+            background: rgba(30,30,50,0.8);
+            border-color: rgba(255,255,255,0.1);
         }
-        .status-bar .lock-btn:active { transform: scale(0.8); }
-
-        .desktop {
-            flex: 1; overflow-y: auto; padding: 8px 4px 4px 4px;
-            display: flex; flex-direction: column; scroll-behavior: smooth;
+        .phone.dark-theme .app-window {
+            background: #1a1a2e;
         }
-        .desktop::-webkit-scrollbar { width: 0; }
-        .desktop-date {
-            text-align: center; font-size: 14px; font-weight: 500; color: #555;
-            padding: 4px 0 8px 0; letter-spacing: 0.5px; flex-shrink: 0;
+        .phone.dark-theme .app-header {
+            background: rgba(30,30,50,0.9);
+            color: #eee;
+            border-bottom-color: rgba(255,255,255,0.1);
         }
-        .app-grid {
-            display: grid; grid-template-columns: repeat(4, 1fr);
-            gap: 16px 6px; padding: 4px 2px 12px 2px;
-            flex: 1; align-content: start;
+        .phone.dark-theme .app-header .title,
+        .phone.dark-theme .app-header .close-btn {
+            color: #eee;
         }
-        .app-item {
-            display: flex; flex-direction: column; align-items: center; gap: 6px;
-            cursor: grab; transition: transform 0.15s, opacity 0.2s;
-            padding: 6px 0; border-radius: 16px; touch-action: none;
+        .phone.dark-theme .app-body {
+            background: #1a1a2e;
+            color: #eee;
         }
-        .app-item:active { transform: scale(0.92); }
-        .app-item.dragging { opacity: 0.3; transform: scale(0.9); }
-        .app-item .icon {
-            width: 60px; height: 60px; border-radius: 16px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 32px; color: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            position: relative; pointer-events: none;
+        .phone.dark-theme .app-body input,
+        .phone.dark-theme .app-body textarea,
+        .phone.dark-theme .app-body .note-item,
+        .phone.dark-theme .app-body .contact-item,
+        .phone.dark-theme .app-body .file-item,
+        .phone.dark-theme .app-body .msg-item,
+        .phone.dark-theme .app-body .mail-item,
+        .phone.dark-theme .app-body .calc-grid button,
+        .phone.dark-theme .app-body .clock-tabs .tab,
+        .phone.dark-theme .app-body .stopwatch-controls button,
+        .phone.dark-theme .app-body .timer-controls button {
+            background: #2a2a3e;
+            color: #eee;
+            border-color: #444;
         }
-        .app-item .icon .badge {
-            position: absolute; top: -4px; right: -4px; background: #ff3b30; color: #fff;
-            font-size: 10px; font-weight: 700; min-width: 18px; height: 18px;
-            border-radius: 10px; display: flex; align-items: center; justify-content: center;
-            padding: 0 5px; border: 1.5px solid #f5f5f5;
+        .phone.dark-theme .app-body .calc-grid .op {
+            background: #3a2a1a;
+            color: #ff8a50;
         }
-        .app-item .label {
-            font-size: 11px; color: #1a1a2e; font-weight: 500; text-align: center;
-            line-height: 1.2; max-width: 64px; word-break: break-all;
-            text-shadow: 0 1px 2px rgba(255,255,255,0.5); pointer-events: none;
-        }
-
-        .icon-orange { background: linear-gradient(145deg, #f57c00, #e65100); }
-        .icon-red { background: linear-gradient(145deg, #ff3d00, #c62828); }
-        .icon-blue { background: linear-gradient(145deg, #2979ff, #0d47a1); }
-        .icon-green { background: linear-gradient(145deg, #00c853, #1b5e20); }
-        .icon-purple { background: linear-gradient(145deg, #aa00ff, #4a148c); }
-        .icon-teal { background: linear-gradient(145deg, #00bcd4, #00695c); }
-        .icon-pink { background: linear-gradient(145deg, #ff4081, #880e4f); }
-        .icon-indigo { background: linear-gradient(145deg, #536dfe, #1a237e); }
-        .icon-amber { background: linear-gradient(145deg, #ffb300, #ff6f00); }
-        .icon-cyan { background: linear-gradient(145deg, #18ffff, #006064); }
-        .icon-lime { background: linear-gradient(145deg, #aeea00, #827717); }
-        .icon-brown { background: linear-gradient(145deg, #8d6e63, #3e2723); }
-        .icon-grey { background: linear-gradient(145deg, #78909c, #263238); }
-        .icon-deeporange { background: linear-gradient(145deg, #ff6d00, #bf360c); }
-        .icon-lightblue { background: linear-gradient(145deg, #40c4ff, #01579b); }
-
-        .dock {
-            display: flex; justify-content: center; gap: 20px;
-            padding: 10px 16px 6px 16px;
-            background: rgba(255,255,255,0.7); backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            border-radius: 28px; margin: 0 4px 2px 4px;
-            flex-shrink: 0; border: 1px solid rgba(255,255,255,0.3);
-            box-shadow: 0 -2px 12px rgba(0,0,0,0.04);
-            min-height: 70px; align-items: center;
-        }
-        .dock .app-item { cursor: grab; touch-action: none; }
-        .dock .app-item .icon { width: 50px; height: 50px; font-size: 26px; border-radius: 14px; }
-        .dock .app-item .label { display: none; }
-
-        .app-window {
-            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background: #f8f9fc; border-radius: 44px; z-index: 200;
-            display: none; flex-direction: column; overflow: hidden;
-            animation: appOpen 0.32s cubic-bezier(0.32, 0.72, 0, 1); padding: 0;
-        }
-        .app-window.active { display: flex; }
-        @keyframes appOpen {
-            0% { transform: scale(0.88) translateY(40px); opacity: 0.5; border-radius: 60px; }
-            100% { transform: scale(1) translateY(0); opacity: 1; border-radius: 44px; }
-        }
-        .app-header {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 14px 20px 10px 20px;
-            background: rgba(255,255,255,0.85); backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(0,0,0,0.06);
-            flex-shrink: 0; min-height: 54px; padding-top: 18px;
-        }
-        .app-header .title { font-size: 17px; font-weight: 700; color: #1a1a2e; display: flex; align-items: center; gap: 8px; }
-        .app-header .title .emoji { font-size: 20px; }
-        .app-header .close-btn {
-            width: 32px; height: 32px; border-radius: 50%; background: rgba(0,0,0,0.06);
-            border: none; font-size: 18px; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; color: #555;
-            transition: background 0.2s;
-        }
-        .app-header .close-btn:active { transform: scale(0.88); background: rgba(0,0,0,0.12); }
-        .app-body {
-            flex: 1; overflow-y: auto; padding: 16px 18px 20px 18px;
-            background: #f8f9fc;
-        }
-        .app-body::-webkit-scrollbar { width: 3px; }
-        .app-body::-webkit-scrollbar-thumb { background: #ccc; border-radius: 6px; }
-
-        /* 锁屏 */
-        .lock-screen {
-            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.75); backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            z-index: 999; display: none; flex-direction: column;
-            align-items: center; justify-content: center; border-radius: 44px;
+        .phone.dark-theme .app-body .calc-grid .eq {
+            background: #e65100;
             color: #fff;
         }
-        .lock-screen.active { display: flex; }
-        .lock-screen .lock-time { font-size: 72px; font-weight: 300; letter-spacing: 4px; margin-bottom: 12px; }
-        .lock-screen .lock-date { font-size: 18px; opacity: 0.7; margin-bottom: 40px; }
-        .lock-screen .lock-pin { display: flex; gap: 12px; margin-bottom: 20px; }
+        .phone.dark-theme .app-body .calc-display {
+            background: #0a0a1a;
+        }
+        .phone.dark-theme .app-body .note-item {
+            border-left-color: #e65100;
+        }
+        .phone.dark-theme .app-body .setting-row .label,
+        .phone.dark-theme .app-body .setting-group .setting-title {
+            color: #eee;
+        }
+        .phone.dark-theme .app-body .setting-row input[type="range"] {
+            background: #444;
+        }
+        .phone.dark-theme .lock-screen {
+            background: rgba(0,0,0,0.85);
+        }
+        .notch {
+            position: absolute;
+            top: 14px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 28px;
+            background: #1a1a2e;
+            border-radius: 0 0 18px 18px;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .notch .cam {
+            width: 8px;
+            height: 8px;
+            background: #2d2d44;
+            border-radius: 50%;
+            border: 1px solid #3a3a5a;
+        }
+        .notch .speaker {
+            width: 50px;
+            height: 5px;
+            background: #2d2d44;
+            border-radius: 4px;
+        }
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 12px 4px 12px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #1a1a2e;
+            background: transparent;
+            flex-shrink: 0;
+            position: relative;
+            z-index: 50;
+        }
+        .status-bar .time {
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+        .status-bar .icons {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            font-size: 14px;
+        }
+        .status-bar .lock-btn {
+            background: none;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            padding: 0 4px;
+            color: inherit;
+        }
+        .status-bar .lock-btn:active {
+            transform: scale(0.8);
+        }
+        .desktop {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px 4px 4px 4px;
+            display: flex;
+            flex-direction: column;
+            scroll-behavior: smooth;
+        }
+        .desktop::-webkit-scrollbar {
+            width: 0;
+        }
+        .desktop-date {
+            text-align: center;
+            font-size: 14px;
+            font-weight: 500;
+            color: #555;
+            padding: 4px 0 8px 0;
+            letter-spacing: 0.5px;
+            flex-shrink: 0;
+        }
+        .app-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px 6px;
+            padding: 4px 2px 12px 2px;
+            flex: 1;
+            align-content: start;
+        }
+        .app-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            cursor: grab;
+            transition: transform 0.15s, opacity 0.2s;
+            padding: 6px 0;
+            border-radius: 16px;
+            touch-action: none;
+        }
+        .app-item:active {
+            transform: scale(0.92);
+        }
+        .app-item.dragging {
+            opacity: 0.3;
+            transform: scale(0.9);
+        }
+        .app-item .icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            position: relative;
+            pointer-events: none;
+        }
+        .app-item .icon .badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: #ff3b30;
+            color: #fff;
+            font-size: 10px;
+            font-weight: 700;
+            min-width: 18px;
+            height: 18px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 5px;
+            border: 1.5px solid #f5f5f5;
+        }
+        .app-item .label {
+            font-size: 11px;
+            color: #1a1a2e;
+            font-weight: 500;
+            text-align: center;
+            line-height: 1.2;
+            max-width: 64px;
+            word-break: break-all;
+            text-shadow: 0 1px 2px rgba(255,255,255,0.5);
+            pointer-events: none;
+        }
+        .icon-orange {
+            background: linear-gradient(145deg, #f57c00, #e65100);
+        }
+        .icon-red {
+            background: linear-gradient(145deg, #ff3d00, #c62828);
+        }
+        .icon-blue {
+            background: linear-gradient(145deg, #2979ff, #0d47a1);
+        }
+        .icon-green {
+            background: linear-gradient(145deg, #00c853, #1b5e20);
+        }
+        .icon-purple {
+            background: linear-gradient(145deg, #aa00ff, #4a148c);
+        }
+        .icon-teal {
+            background: linear-gradient(145deg, #00bcd4, #00695c);
+        }
+        .icon-pink {
+            background: linear-gradient(145deg, #ff4081, #880e4f);
+        }
+        .icon-indigo {
+            background: linear-gradient(145deg, #536dfe, #1a237e);
+        }
+        .icon-amber {
+            background: linear-gradient(145deg, #ffb300, #ff6f00);
+        }
+        .icon-cyan {
+            background: linear-gradient(145deg, #18ffff, #006064);
+        }
+        .icon-lime {
+            background: linear-gradient(145deg, #aeea00, #827717);
+        }
+        .icon-brown {
+            background: linear-gradient(145deg, #8d6e63, #3e2723);
+        }
+        .icon-grey {
+            background: linear-gradient(145deg, #78909c, #263238);
+        }
+        .icon-deeporange {
+            background: linear-gradient(145deg, #ff6d00, #bf360c);
+        }
+        .icon-lightblue {
+            background: linear-gradient(145deg, #40c4ff, #01579b);
+        }
+        .dock {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            padding: 10px 16px 6px 16px;
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-radius: 28px;
+            margin: 0 4px 2px 4px;
+            flex-shrink: 0;
+            border: 1px solid rgba(255,255,255,0.3);
+            box-shadow: 0 -2px 12px rgba(0,0,0,0.04);
+            min-height: 70px;
+            align-items: center;
+        }
+        .dock .app-item {
+            cursor: grab;
+            touch-action: none;
+        }
+        .dock .app-item .icon {
+            width: 50px;
+            height: 50px;
+            font-size: 26px;
+            border-radius: 14px;
+        }
+        .dock .app-item .label {
+            display: none;
+        }
+        .app-window {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #f8f9fc;
+            border-radius: 44px;
+            z-index: 200;
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            animation: appOpen 0.32s cubic-bezier(0.32, 0.72, 0, 1);
+            padding: 0;
+        }
+        .app-window.active {
+            display: flex;
+        }
+        @keyframes appOpen {
+            0% {
+                transform: scale(0.88) translateY(40px);
+                opacity: 0.5;
+                border-radius: 60px;
+            }
+            100% {
+                transform: scale(1) translateY(0);
+                opacity: 1;
+                border-radius: 44px;
+            }
+        }
+        .app-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 20px 10px 20px;
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+            flex-shrink: 0;
+            min-height: 54px;
+            padding-top: 18px;
+        }
+        .app-header .title {
+            font-size: 17px;
+            font-weight: 700;
+            color: #1a1a2e;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .app-header .title .emoji {
+            font-size: 20px;
+        }
+        .app-header .close-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(0,0,0,0.06);
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #555;
+            transition: background 0.2s;
+        }
+        .app-header .close-btn:active {
+            transform: scale(0.88);
+            background: rgba(0,0,0,0.12);
+        }
+        .app-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px 18px 20px 18px;
+            background: #f8f9fc;
+            display: flex;
+            flex-direction: column;
+        }
+        .app-body::-webkit-scrollbar {
+            width: 3px;
+        }
+        .app-body::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 6px;
+        }
+        /* 锁屏 */
+        .lock-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: 999;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 44px;
+            color: #fff;
+        }
+        .lock-screen.active {
+            display: flex;
+        }
+        .lock-screen .lock-time {
+            font-size: 72px;
+            font-weight: 300;
+            letter-spacing: 4px;
+            margin-bottom: 12px;
+        }
+        .lock-screen .lock-date {
+            font-size: 18px;
+            opacity: 0.7;
+            margin-bottom: 40px;
+        }
+        .lock-screen .lock-pin {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
         .lock-screen .lock-pin input {
-            width: 50px; height: 50px; border-radius: 12px; border: none;
-            background: rgba(255,255,255,0.15); color: #fff; font-size: 24px;
-            text-align: center; outline: none; caret-color: transparent;
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            border: none;
+            background: rgba(255,255,255,0.15);
+            color: #fff;
+            font-size: 24px;
+            text-align: center;
+            outline: none;
+            caret-color: transparent;
         }
-        .lock-screen .lock-pin input:focus { background: rgba(255,255,255,0.25); }
-        .lock-screen .lock-actions { display: flex; gap: 16px; margin-top: 12px; }
+        .lock-screen .lock-pin input:focus {
+            background: rgba(255,255,255,0.25);
+        }
+        .lock-screen .lock-actions {
+            display: flex;
+            gap: 16px;
+            margin-top: 12px;
+        }
         .lock-screen .lock-actions button {
-            padding: 10px 28px; border: none; border-radius: 30px;
-            font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.15s;
+            padding: 10px 28px;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
         }
-        .lock-screen .lock-actions .unlock-btn { background: #e65100; color: #fff; }
-        .lock-screen .lock-actions .unlock-btn:active { transform: scale(0.92); }
-        .lock-screen .lock-actions .cancel-btn { background: rgba(255,255,255,0.2); color: #fff; }
-        .lock-screen .lock-actions .cancel-btn:active { transform: scale(0.92); }
-        .lock-screen .lock-status { font-size: 14px; opacity: 0.6; margin-top: 12px; }
+        .lock-screen .lock-actions .unlock-btn {
+            background: #e65100;
+            color: #fff;
+        }
+        .lock-screen .lock-actions .unlock-btn:active {
+            transform: scale(0.92);
+        }
+        .lock-screen .lock-actions .cancel-btn {
+            background: rgba(255,255,255,0.2);
+            color: #fff;
+        }
+        .lock-screen .lock-actions .cancel-btn:active {
+            transform: scale(0.92);
+        }
+        .lock-screen .lock-status {
+            font-size: 14px;
+            opacity: 0.6;
+            margin-top: 12px;
+        }
 
         /* 时钟Tabs */
         .clock-tabs {
-            display: flex; gap: 4px; border-bottom: 1px solid #e0e0e0;
-            margin-bottom: 16px; flex-wrap: wrap;
+            display: flex;
+            gap: 4px;
+            border-bottom: 1px solid #e0e0e0;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
         }
         .clock-tabs .tab {
-            padding: 8px 14px; cursor: pointer; font-weight: 600;
-            color: #888; border-bottom: 3px solid transparent; transition: all 0.2s; font-size: 14px;
+            padding: 8px 14px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #888;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+            font-size: 14px;
         }
-        .clock-tabs .tab.active { color: #1a1a2e; border-bottom-color: #e65100; }
-        .clock-tab-content { display: none; }
-        .clock-tab-content.active { display: block; }
-
-        .stopwatch-display, .timer-display {
-            font-size: 48px; font-weight: 300; text-align: center;
-            padding: 20px 0; font-variant-numeric: tabular-nums;
+        .clock-tabs .tab.active {
+            color: #1a1a2e;
+            border-bottom-color: #e65100;
         }
-        .stopwatch-controls, .timer-controls {
-            display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+        .clock-tab-content {
+            display: none;
         }
-        .stopwatch-controls button, .timer-controls button {
-            padding: 8px 24px; border: none; border-radius: 30px;
-            font-weight: 600; cursor: pointer; background: #eee; color: #1a1a2e;
+        .clock-tab-content.active {
+            display: block;
+        }
+        .stopwatch-display,
+        .timer-display {
+            font-size: 48px;
+            font-weight: 300;
+            text-align: center;
+            padding: 20px 0;
+            font-variant-numeric: tabular-nums;
+        }
+        .stopwatch-controls,
+        .timer-controls {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .stopwatch-controls button,
+        .timer-controls button {
+            padding: 8px 24px;
+            border: none;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #eee;
+            color: #1a1a2e;
             transition: all 0.15s;
         }
-        .stopwatch-controls button:active, .timer-controls button:active { transform: scale(0.92); }
-        .stopwatch-controls .primary, .timer-controls .primary { background: #e65100; color: #fff; }
-        .timer-input { display: flex; gap: 8px; justify-content: center; margin-top: 12px; align-items: center; }
-        .timer-input input { width: 60px; padding: 6px; border: 1px solid #ddd; border-radius: 8px; text-align: center; font-size: 18px; }
-
-        .world-clock-list { display: flex; flex-direction: column; gap: 8px; }
-        .world-clock-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #f0f0f0; }
-        .world-clock-item .city { font-weight: 600; color: #1a1a2e; }
-        .world-clock-item .time { font-weight: 300; font-size: 18px; }
+        .stopwatch-controls button:active,
+        .timer-controls button:active {
+            transform: scale(0.92);
+        }
+        .stopwatch-controls .primary,
+        .timer-controls .primary {
+            background: #e65100;
+            color: #fff;
+        }
+        .timer-input {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-top: 12px;
+            align-items: center;
+        }
+        .timer-input input {
+            width: 60px;
+            padding: 6px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 18px;
+        }
+        .world-clock-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .world-clock-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .world-clock-item .city {
+            font-weight: 600;
+            color: #1a1a2e;
+        }
+        .world-clock-item .time {
+            font-weight: 300;
+            font-size: 18px;
+        }
 
         /* 音乐播放器 */
         .music-player .tab-bar {
-            display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap;
+            display: flex;
+            gap: 6px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
         }
         .music-player .tab-bar .tab {
-            padding: 6px 14px; border-radius: 20px; background: #eee;
-            cursor: pointer; font-weight: 500; font-size: 14px; transition: all 0.2s;
+            padding: 6px 14px;
+            border-radius: 20px;
+            background: #eee;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.2s;
         }
-        .music-player .tab-bar .tab.active { background: #e65100; color: #fff; }
-        .music-player .tab-content { display: none; }
-        .music-player .tab-content.active { display: block; }
+        .music-player .tab-bar .tab.active {
+            background: #e65100;
+            color: #fff;
+        }
+        .music-player .tab-content {
+            display: none;
+        }
+        .music-player .tab-content.active {
+            display: block;
+        }
         .music-player .playlist .track {
-            display: flex; justify-content: space-between; padding: 8px 0;
-            border-bottom: 1px solid #f0f0f0; align-items: center;
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+            align-items: center;
         }
-        .music-player .playlist .track .name { font-weight: 500; flex: 1; }
+        .music-player .playlist .track .name {
+            font-weight: 500;
+            flex: 1;
+        }
         .music-player .playlist .track .controls button {
-            background: none; border: none; font-size: 20px; cursor: pointer; padding: 0 6px;
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 0 6px;
         }
         .music-player .playback-controls {
-            display: flex; gap: 16px; justify-content: center; padding: 12px 0;
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            padding: 12px 0;
         }
         .music-player .playback-controls button {
-            background: none; border: none; font-size: 28px; cursor: pointer; padding: 0 8px; color: #1a1a2e;
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            padding: 0 8px;
+            color: #1a1a2e;
         }
-        .music-player .playback-controls button:active { transform: scale(0.8); }
-        .music-player .current-track { text-align: center; font-size: 14px; color: #888; margin-bottom: 8px; }
-        .music-iframe { width: 100%; height: 400px; border: none; border-radius: 12px; background: #fff; }
+        .music-player .playback-controls button:active {
+            transform: scale(0.8);
+        }
+        .music-player .current-track {
+            text-align: center;
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 8px;
+        }
+        .music-iframe {
+            width: 100%;
+            height: 450px;
+            border: none;
+            border-radius: 12px;
+            background: #fff;
+        }
 
         /* 地图 */
         .map-tabs {
-            display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap;
+            display: flex;
+            gap: 6px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
         }
         .map-tabs .tab {
-            padding: 6px 14px; border-radius: 20px; background: #eee;
-            cursor: pointer; font-weight: 500; font-size: 14px; transition: all 0.2s;
+            padding: 6px 14px;
+            border-radius: 20px;
+            background: #eee;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.2s;
         }
-        .map-tabs .tab.active { background: #e65100; color: #fff; }
-        .map-frame { width: 100%; height: 500px; border: none; border-radius: 12px; background: #fff; }
+        .map-tabs .tab.active {
+            background: #e65100;
+            color: #fff;
+        }
+        .map-frame {
+            flex: 1;
+            width: 100%;
+            border: none;
+            border-radius: 12px;
+            background: #fff;
+            min-height: 400px;
+        }
+
+        /* 浏览器 */
+        .browser-bar {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            align-items: center;
+        }
+        .browser-bar input {
+            flex: 1;
+            padding: 8px 14px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            font-size: 14px;
+            outline: none;
+            background: #fff;
+        }
+        .browser-bar input:focus {
+            border-color: #e65100;
+        }
+        .browser-bar button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 20px;
+            background: #e65100;
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .browser-bar button:active {
+            transform: scale(0.92);
+        }
+        .browser-frame {
+            flex: 1;
+            border: none;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #fff;
+            min-height: 400px;
+        }
+        .browser-frame iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
 
         /* 设置 */
         .setting-group {
@@ -250,138 +756,774 @@
             padding-bottom: 16px;
         }
         .setting-group .setting-title {
-            font-weight: 600; font-size: 16px; color: #1a1a2e; margin-bottom: 12px;
+            font-weight: 600;
+            font-size: 16px;
+            color: #1a1a2e;
+            margin-bottom: 12px;
         }
         .setting-row {
-            display: flex; align-items: center; justify-content: space-between;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             padding: 8px 0;
+            gap: 12px;
         }
-        .setting-row .label { font-size: 14px; color: #333; }
-        .setting-row input[type="range"] { width: 140px; }
-        .setting-row .value { font-size: 14px; color: #888; min-width: 36px; text-align: right; }
+        .setting-row .label {
+            font-size: 14px;
+            color: #333;
+            flex: 1;
+        }
+        .setting-row input[type="range"] {
+            flex: 2;
+            min-width: 100px;
+        }
+        .setting-row .value {
+            font-size: 14px;
+            color: #888;
+            min-width: 36px;
+            text-align: right;
+        }
         .setting-row .btn {
-            padding: 6px 18px; border: none; border-radius: 20px;
-            background: #e65100; color: #fff; cursor: pointer; font-weight: 600;
+            padding: 6px 18px;
+            border: none;
+            border-radius: 20px;
+            background: #e65100;
+            color: #fff;
+            cursor: pointer;
+            font-weight: 600;
+            white-space: nowrap;
         }
-        .setting-row .btn:active { transform: scale(0.92); }
-        .setting-row .btn-secondary { background: #888; }
-        .setting-password-input { display: flex; gap: 8px; align-items: center; }
+        .setting-row .btn:active {
+            transform: scale(0.92);
+        }
+        .setting-row .btn-secondary {
+            background: #888;
+        }
+        .setting-password-input {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex: 1;
+            flex-wrap: wrap;
+        }
         .setting-password-input input {
-            padding: 6px 12px; border: 1px solid #ddd; border-radius: 8px;
-            font-size: 14px; width: 120px; outline: none;
+            padding: 6px 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            width: 120px;
+            outline: none;
         }
-        .setting-password-input input:focus { border-color: #e65100; }
+        .setting-password-input input:focus {
+            border-color: #e65100;
+        }
         .setting-password-input button {
-            padding: 6px 16px; border: none; border-radius: 8px;
-            background: #e65100; color: #fff; cursor: pointer; font-weight: 600;
+            padding: 6px 16px;
+            border: none;
+            border-radius: 8px;
+            background: #e65100;
+            color: #fff;
+            cursor: pointer;
+            font-weight: 600;
         }
-        .setting-password-input button:active { transform: scale(0.92); }
+        .setting-password-input button:active {
+            transform: scale(0.92);
+        }
 
-        /* 其他已有样式... (保持简洁) */
-        .calc-display { background: #1a1a2e; color: #fff; border-radius: 16px; padding: 18px 20px 12px; margin-bottom: 16px; text-align: right; min-height: 90px; display: flex; flex-direction: column; justify-content: flex-end; }
-        .calc-display .expr { font-size: 18px; color: #aaa; min-height: 28px; word-break: break-all; }
-        .calc-display .result { font-size: 42px; font-weight: 300; letter-spacing: 1px; }
-        .calc-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; }
-        .calc-grid button { padding: 18px 0; border: none; border-radius: 14px; font-size: 24px; font-weight: 500; cursor: pointer; transition: all 0.15s; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
-        .calc-grid button:active { transform: scale(0.92); background: #eee; }
-        .calc-grid .op { background: #fff3e0; color: #e65100; }
-        .calc-grid .eq { background: #e65100; color: #fff; }
-        .calc-grid .func { background: #e8eaf6; color: #283593; }
-        .calc-grid .span2 { grid-column: span 2; }
-        .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
-        .cal-header .month { font-size: 20px; font-weight: 700; color: #1a1a2e; }
-        .cal-header button { background: none; border: none; font-size: 22px; cursor: pointer; padding: 4px 12px; border-radius: 8px; color: #555; }
-        .cal-weekdays { display: grid; grid-template-columns: repeat(7,1fr); text-align: center; font-size: 13px; font-weight: 600; color: #888; margin-bottom: 6px; }
-        .cal-days { display: grid; grid-template-columns: repeat(7,1fr); gap: 4px; }
-        .cal-days .day { text-align: center; padding: 8px 0; border-radius: 50%; font-size: 15px; font-weight: 500; color: #1a1a2e; cursor: pointer; transition: background 0.15s; }
-        .cal-days .day.other { color: #bbb; }
-        .cal-days .day.today { background: #e65100; color: #fff; font-weight: 700; }
-        .clock-main .time-display { font-size: 56px; font-weight: 300; letter-spacing: 3px; color: #1a1a2e; font-variant-numeric: tabular-nums; text-align: center; }
-        .clock-main .date-display { font-size: 16px; color: #888; margin-top: 4px; text-align: center; }
-        .alarm-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f0f0f0; }
-        .alarm-row .toggle { width: 44px; height: 26px; border-radius: 14px; background: #ccc; border: none; cursor: pointer; transition: background 0.25s; position: relative; }
-        .alarm-row .toggle.on { background: #e65100; }
-        .alarm-row .toggle::after { content: ''; position: absolute; top: 2px; left: 2px; width: 22px; height: 22px; border-radius: 50%; background: #fff; transition: transform 0.25s; box-shadow: 0 1px 4px rgba(0,0,0,0.2); }
-        .alarm-row .toggle.on::after { transform: translateX(18px); }
-        .add-alarm { display: flex; gap: 8px; margin-top: 12px; }
-        .add-alarm input { flex: 1; padding: 8px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; outline: none; }
-        .add-alarm button { padding: 8px 16px; background: #e65100; color: #fff; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; }
-        .compass-container { display: flex; flex-direction: column; align-items: center; padding: 20px 0; }
-        .compass-ring { width: 200px; height: 200px; border-radius: 50%; border: 6px solid #e0e0e0; position: relative; background: radial-gradient(circle at center, #f5f5f5, #e8e8e8); }
-        .compass-ring .needle { position: absolute; top: 50%; left: 50%; width: 4px; height: 70px; background: #e65100; transform-origin: bottom center; transform: translate(-50%,-100%) rotate(0deg); border-radius: 4px 4px 0 0; transition: transform 0.1s; z-index: 2; }
-        .compass-ring .center-dot { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 14px; height: 14px; border-radius: 50%; background: #1a1a2e; z-index: 3; }
-        .compass-ring .direction-label { position: absolute; font-size: 13px; font-weight: 700; color: #1a1a2e; }
-        .compass-ring .dir-n { top: 10px; left: 50%; transform: translateX(-50%); }
-        .compass-ring .dir-e { right: 10px; top: 50%; transform: translateY(-50%); }
-        .compass-ring .dir-s { bottom: 10px; left: 50%; transform: translateX(-50%); }
-        .compass-ring .dir-w { left: 10px; top: 50%; transform: translateY(-50%); }
-        .compass-degree { font-size: 28px; font-weight: 300; margin-top: 18px; color: #1a1a2e; }
-        .compass-dir-text { font-size: 18px; font-weight: 600; color: #e65100; margin-top: 4px; }
-        .contact-item, .file-item, .msg-item, .mail-item { display: flex; align-items: center; gap: 14px; padding: 10px 0; border-bottom: 1px solid #f0f0f0; cursor: default; }
-        .contact-item .avatar { width: 44px; height: 44px; border-radius: 50%; background: #e65100; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 600; flex-shrink: 0; }
-        .contact-item .info .name { font-weight: 600; color: #1a1a2e; }
-        .contact-item .info .phone { font-size: 13px; color: #888; }
-        .contact-form, .file-toolbar, .msg-compose, .mail-compose, .note-editor { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
-        .contact-form input, .msg-compose input, .mail-compose input, .mail-compose textarea, .note-editor input, .note-editor textarea { flex: 1; min-width: 100px; padding: 8px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; outline: none; font-family: inherit; }
-        .contact-form input:focus, .msg-compose input:focus, .mail-compose input:focus, .mail-compose textarea:focus, .note-editor input:focus, .note-editor textarea:focus { border-color: #e65100; }
-        .contact-form button, .msg-compose button, .mail-compose .send, .note-editor .save, .file-toolbar .primary, .add-alarm button { padding: 8px 18px; background: #e65100; color: #fff; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; }
-        .contact-form button:active, .msg-compose button:active, .mail-compose .send:active, .note-editor .save:active, .file-toolbar button:active, .add-alarm button:active { transform: scale(0.94); }
-        .note-item { padding: 12px 14px; background: #fff; border-radius: 12px; margin-bottom: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.04); border-left: 4px solid #e65100; cursor: default; }
-        .note-item .note-title { font-weight: 600; color: #1a1a2e; }
-        .note-item .note-body { font-size: 14px; color: #555; margin-top: 4px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        .note-item .note-meta { font-size: 11px; color: #aaa; margin-top: 6px; display: flex; justify-content: space-between; }
-        .note-item .note-meta .del-note, .contact-item .del-btn, .file-item .del-btn, .msg-item .del-btn, .mail-item .del-btn { color: #ff3b30; background: none; border: none; cursor: pointer; font-size: 14px; }
-        .camera-view { background: #1a1a2e; border-radius: 16px; overflow: hidden; min-height: 200px; display: flex; align-items: center; justify-content: center; position: relative; }
-        .camera-view video { width: 100%; display: block; border-radius: 16px; }
-        .camera-actions { display: flex; gap: 14px; margin-top: 14px; justify-content: center; flex-wrap: wrap; }
-        .camera-actions button { padding: 10px 24px; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; transition: all 0.15s; }
-        .camera-actions button:active { transform: scale(0.92); }
-        .camera-actions .capture { background: #e65100; color: #fff; }
-        .camera-actions .switch-cam { background: #e8eaf6; color: #283593; }
-        .photo-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-top: 14px; }
-        .photo-grid .photo { aspect-ratio: 1; border-radius: 10px; overflow: hidden; background: #eee; position: relative; cursor: default; }
-        .photo-grid .photo img { width: 100%; height: 100%; object-fit: cover; }
-        .photo-grid .photo .del-photo { position: absolute; top: 4px; right: 4px; background: rgba(0,0,0,0.6); color: #fff; border: none; border-radius: 50%; width: 22px; height: 22px; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        .iframe-container { width: 100%; height: 100%; min-height: 480px; border: none; border-radius: 12px; overflow: hidden; background: #fff; }
-        .iframe-container iframe { width: 100%; height: 100%; border: none; min-height: 480px; }
-        .empty-state { text-align: center; padding: 40px 20px; color: #bbb; font-size: 14px; }
-        .empty-state .big-emoji { font-size: 48px; display: block; margin-bottom: 12px; }
-        .text-muted { color: #888; font-size: 13px; }
-        .mt-8 { margin-top: 8px; }
-        .mt-12 { margin-top: 12px; }
-        .text-center { text-align: center; }
+        /* 电话拨号盘修复 */
+        .phone-dialer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+        .phone-dialer .number-display {
+            width: 100%;
+            padding: 12px;
+            text-align: center;
+            font-size: 32px;
+            font-weight: 300;
+            letter-spacing: 4px;
+            background: #fff;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            min-height: 60px;
+            border: 1px solid #eee;
+        }
+        .phone-dialer .dial-pad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            width: 100%;
+            max-width: 280px;
+        }
+        .phone-dialer .dial-pad button {
+            padding: 16px 0;
+            border: none;
+            border-radius: 50%;
+            background: #f0f0f0;
+            font-size: 24px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s;
+            aspect-ratio: 1/1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .phone-dialer .dial-pad button:active {
+            background: #ddd;
+            transform: scale(0.92);
+        }
+        .phone-dialer .dial-pad .call-btn {
+            background: #4caf50;
+            color: #fff;
+        }
+        .phone-dialer .dial-pad .call-btn:active {
+            background: #388e3c;
+        }
+        .phone-dialer .dial-pad .delete-btn {
+            background: #ff3b30;
+            color: #fff;
+        }
+        .phone-dialer .dial-pad .delete-btn:active {
+            background: #c62828;
+        }
+        .phone-dialer .action-row {
+            margin-top: 16px;
+            display: flex;
+            gap: 16px;
+        }
+        .phone-dialer .action-row button {
+            padding: 8px 24px;
+            border: none;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .phone-dialer .action-row .sms-btn {
+            background: #2979ff;
+            color: #fff;
+        }
+        .phone-dialer .action-row .sms-btn:active {
+            transform: scale(0.92);
+        }
+
+        /* 其他已有样式 */
+        .calc-display {
+            background: #1a1a2e;
+            color: #fff;
+            border-radius: 16px;
+            padding: 18px 20px 12px;
+            margin-bottom: 16px;
+            text-align: right;
+            min-height: 90px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+        .calc-display .expr {
+            font-size: 18px;
+            color: #aaa;
+            min-height: 28px;
+            word-break: break-all;
+        }
+        .calc-display .result {
+            font-size: 42px;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+        .calc-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+        .calc-grid button {
+            padding: 18px 0;
+            border: none;
+            border-radius: 14px;
+            font-size: 24px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s;
+            background: #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        .calc-grid button:active {
+            transform: scale(0.92);
+            background: #eee;
+        }
+        .calc-grid .op {
+            background: #fff3e0;
+            color: #e65100;
+        }
+        .calc-grid .eq {
+            background: #e65100;
+            color: #fff;
+        }
+        .calc-grid .func {
+            background: #e8eaf6;
+            color: #283593;
+        }
+        .calc-grid .span2 {
+            grid-column: span 2;
+        }
+        .cal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+        .cal-header .month {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a1a2e;
+        }
+        .cal-header button {
+            background: none;
+            border: none;
+            font-size: 22px;
+            cursor: pointer;
+            padding: 4px 12px;
+            border-radius: 8px;
+            color: #555;
+        }
+        .cal-weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            text-align: center;
+            font-size: 13px;
+            font-weight: 600;
+            color: #888;
+            margin-bottom: 6px;
+        }
+        .cal-days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+        }
+        .cal-days .day {
+            text-align: center;
+            padding: 8px 0;
+            border-radius: 50%;
+            font-size: 15px;
+            font-weight: 500;
+            color: #1a1a2e;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .cal-days .day.other {
+            color: #bbb;
+        }
+        .cal-days .day.today {
+            background: #e65100;
+            color: #fff;
+            font-weight: 700;
+        }
+        .clock-main .time-display {
+            font-size: 56px;
+            font-weight: 300;
+            letter-spacing: 3px;
+            color: #1a1a2e;
+            font-variant-numeric: tabular-nums;
+            text-align: center;
+        }
+        .clock-main .date-display {
+            font-size: 16px;
+            color: #888;
+            margin-top: 4px;
+            text-align: center;
+        }
+        .alarm-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .alarm-row .toggle {
+            width: 44px;
+            height: 26px;
+            border-radius: 14px;
+            background: #ccc;
+            border: none;
+            cursor: pointer;
+            transition: background 0.25s;
+            position: relative;
+        }
+        .alarm-row .toggle.on {
+            background: #e65100;
+        }
+        .alarm-row .toggle::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #fff;
+            transition: transform 0.25s;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+        }
+        .alarm-row .toggle.on::after {
+            transform: translateX(18px);
+        }
+        .add-alarm {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .add-alarm input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+        }
+        .add-alarm button {
+            padding: 8px 16px;
+            background: #e65100;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .compass-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 0;
+        }
+        .compass-ring {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            border: 6px solid #e0e0e0;
+            position: relative;
+            background: radial-gradient(circle at center, #f5f5f5, #e8e8e8);
+        }
+        .compass-ring .needle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 4px;
+            height: 70px;
+            background: #e65100;
+            transform-origin: bottom center;
+            transform: translate(-50%, -100%) rotate(0deg);
+            border-radius: 4px 4px 0 0;
+            transition: transform 0.1s;
+            z-index: 2;
+        }
+        .compass-ring .center-dot {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #1a1a2e;
+            z-index: 3;
+        }
+        .compass-ring .direction-label {
+            position: absolute;
+            font-size: 13px;
+            font-weight: 700;
+            color: #1a1a2e;
+        }
+        .compass-ring .dir-n {
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .compass-ring .dir-e {
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        .compass-ring .dir-s {
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .compass-ring .dir-w {
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        .compass-degree {
+            font-size: 28px;
+            font-weight: 300;
+            margin-top: 18px;
+            color: #1a1a2e;
+        }
+        .compass-dir-text {
+            font-size: 18px;
+            font-weight: 600;
+            color: #e65100;
+            margin-top: 4px;
+        }
+        .contact-item,
+        .file-item,
+        .msg-item,
+        .mail-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: default;
+        }
+        .contact-item .avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #e65100;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        .contact-item .info .name {
+            font-weight: 600;
+            color: #1a1a2e;
+        }
+        .contact-item .info .phone {
+            font-size: 13px;
+            color: #888;
+        }
+        .contact-form,
+        .file-toolbar,
+        .msg-compose,
+        .mail-compose,
+        .note-editor {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+        .contact-form input,
+        .msg-compose input,
+        .mail-compose input,
+        .mail-compose textarea,
+        .note-editor input,
+        .note-editor textarea {
+            flex: 1;
+            min-width: 100px;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            font-family: inherit;
+        }
+        .contact-form input:focus,
+        .msg-compose input:focus,
+        .mail-compose input:focus,
+        .mail-compose textarea:focus,
+        .note-editor input:focus,
+        .note-editor textarea:focus {
+            border-color: #e65100;
+        }
+        .contact-form button,
+        .msg-compose button,
+        .mail-compose .send,
+        .note-editor .save,
+        .file-toolbar .primary,
+        .add-alarm button {
+            padding: 8px 18px;
+            background: #e65100;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .contact-form button:active,
+        .msg-compose button:active,
+        .mail-compose .send:active,
+        .note-editor .save:active,
+        .file-toolbar button:active,
+        .add-alarm button:active {
+            transform: scale(0.94);
+        }
+        .note-item {
+            padding: 12px 14px;
+            background: #fff;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+            border-left: 4px solid #e65100;
+            cursor: default;
+        }
+        .note-item .note-title {
+            font-weight: 600;
+            color: #1a1a2e;
+        }
+        .note-item .note-body {
+            font-size: 14px;
+            color: #555;
+            margin-top: 4px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .note-item .note-meta {
+            font-size: 11px;
+            color: #aaa;
+            margin-top: 6px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .note-item .note-meta .del-note,
+        .contact-item .del-btn,
+        .file-item .del-btn,
+        .msg-item .del-btn,
+        .mail-item .del-btn {
+            color: #ff3b30;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .camera-view {
+            background: #1a1a2e;
+            border-radius: 16px;
+            overflow: hidden;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .camera-view video {
+            width: 100%;
+            display: block;
+            border-radius: 16px;
+        }
+        .camera-actions {
+            display: flex;
+            gap: 14px;
+            margin-top: 14px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .camera-actions button {
+            padding: 10px 24px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .camera-actions button:active {
+            transform: scale(0.92);
+        }
+        .camera-actions .capture {
+            background: #e65100;
+            color: #fff;
+        }
+        .camera-actions .switch-cam {
+            background: #e8eaf6;
+            color: #283593;
+        }
+        .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-top: 14px;
+        }
+        .photo-grid .photo {
+            aspect-ratio: 1;
+            border-radius: 10px;
+            overflow: hidden;
+            background: #eee;
+            position: relative;
+            cursor: default;
+        }
+        .photo-grid .photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .photo-grid .photo .del-photo {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: rgba(0,0,0,0.6);
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .iframe-container {
+            width: 100%;
+            height: 100%;
+            min-height: 480px;
+            border: none;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #fff;
+        }
+        .iframe-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            min-height: 480px;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #bbb;
+            font-size: 14px;
+        }
+        .empty-state .big-emoji {
+            font-size: 48px;
+            display: block;
+            margin-bottom: 12px;
+        }
+        .text-muted {
+            color: #888;
+            font-size: 13px;
+        }
+        .mt-8 {
+            margin-top: 8px;
+        }
+        .mt-12 {
+            margin-top: 12px;
+        }
+        .text-center {
+            text-align: center;
+        }
 
         .drag-clone {
-            position: fixed; pointer-events: none; z-index: 9999;
-            opacity: 0.85; transform: scale(1.08) rotate(-2deg);
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.85;
+            transform: scale(1.08) rotate(-2deg);
             box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-            border-radius: 18px; padding: 4px;
-            background: rgba(255,255,255,0.3); backdrop-filter: blur(4px);
+            border-radius: 18px;
+            padding: 4px;
+            background: rgba(255,255,255,0.3);
+            backdrop-filter: blur(4px);
         }
-        .drag-clone .icon { width: 60px; height: 60px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 32px; color: #fff; box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
-        .drag-clone .label { display: none; }
-        .drop-zone { border: 2px dashed #e65100; border-radius: 16px; background: rgba(230,81,0,0.08); transform: scale(0.95); transition: all 0.15s; }
+        .drag-clone .icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: #fff;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+        }
+        .drag-clone .label {
+            display: none;
+        }
+        .drop-zone {
+            border: 2px dashed #e65100;
+            border-radius: 16px;
+            background: rgba(230,81,0,0.08);
+            transform: scale(0.95);
+            transition: all 0.15s;
+        }
 
         @media (max-width: 440px) {
-            body { padding: 0; background: #f5f5f5; align-items: stretch; }
-            .phone { width: 100%; max-width: 100%; height: 100vh; height: 100dvh; max-height: 100vh; border-radius: 0; padding: 8px 6px 4px 6px; box-shadow: none; background: #f5f5f5; }
-            .notch { top: 8px; width: 120px; height: 24px; }
-            .app-window { border-radius: 0; }
-            .app-header { padding-top: 12px; min-height: 48px; }
-            .app-body { padding: 12px 14px 16px 14px; }
-            .calc-grid button { padding: 14px 0; font-size: 20px; }
-            .clock-main .time-display { font-size: 42px; }
-            .compass-ring { width: 160px; height: 160px; }
-            .compass-ring .needle { height: 56px; }
-            .dock { gap: 12px; padding: 8px 12px 4px; margin: 0 0 2px; border-radius: 20px; min-height: 60px; }
-            .dock .app-item .icon { width: 44px; height: 44px; font-size: 22px; }
-            .app-item .icon { width: 52px; height: 52px; font-size: 26px; }
-            .app-item .label { font-size: 10px; }
-            .app-grid { gap: 10px 4px; }
-            .lock-screen .lock-time { font-size: 48px; }
+            body {
+                padding: 0;
+                background: #f5f5f5;
+                align-items: stretch;
+            }
+            .phone {
+                width: 100%;
+                max-width: 100%;
+                height: 100vh;
+                height: 100dvh;
+                max-height: 100vh;
+                border-radius: 0;
+                padding: 8px 6px 4px 6px;
+                box-shadow: none;
+                background: #f5f5f5;
+            }
+            .notch {
+                top: 8px;
+                width: 120px;
+                height: 24px;
+            }
+            .app-window {
+                border-radius: 0;
+            }
+            .app-header {
+                padding-top: 12px;
+                min-height: 48px;
+            }
+            .app-body {
+                padding: 12px 14px 16px 14px;
+            }
+            .calc-grid button {
+                padding: 14px 0;
+                font-size: 20px;
+            }
+            .clock-main .time-display {
+                font-size: 42px;
+            }
+            .compass-ring {
+                width: 160px;
+                height: 160px;
+            }
+            .compass-ring .needle {
+                height: 56px;
+            }
+            .dock {
+                gap: 12px;
+                padding: 8px 12px 4px;
+                margin: 0 0 2px;
+                border-radius: 20px;
+                min-height: 60px;
+            }
+            .dock .app-item .icon {
+                width: 44px;
+                height: 44px;
+                font-size: 22px;
+            }
+            .app-item .icon {
+                width: 52px;
+                height: 52px;
+                font-size: 26px;
+            }
+            .app-item .label {
+                font-size: 10px;
+            }
+            .app-grid {
+                gap: 10px 4px;
+            }
+            .lock-screen .lock-time {
+                font-size: 48px;
+            }
         }
         @media (max-width: 380px) {
-            .app-item .icon { width: 44px; height: 44px; font-size: 22px; border-radius: 12px; }
+            .app-item .icon {
+                width: 44px;
+                height: 44px;
+                font-size: 22px;
+                border-radius: 12px;
+            }
         }
     </style>
 </head>
@@ -428,7 +1570,7 @@
 
     <script>
         // ============================================================
-        //  NarutoOS - 完整逻辑 (含地图提供商、音乐在线平台、设置)
+        //  NarutoOS - 完整逻辑 (修复电话布局、地图/浏览器自适应、增强设置)
         // ============================================================
 
         const APPS = [
@@ -458,6 +1600,7 @@
         function getStorage(key, def) {
             try { const v = localStorage.getItem('naruto_' + key); return v ? JSON.parse(v) : def; } catch { return def; }
         }
+
         function setStorage(key, val) {
             localStorage.setItem('naruto_' + key, JSON.stringify(val));
         }
@@ -481,6 +1624,7 @@
         function formatTime(d) {
             return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
         }
+
         function formatDate(d) {
             const week = ['日', '一', '二', '三', '四', '五', '六'];
             return d.getFullYear() + '年' + (d.getMonth() + 1) + '月' + d.getDate() + '日 周' + week[d.getDay()];
@@ -505,7 +1649,9 @@
         const unlockBtn = document.getElementById('unlockBtn');
         const lockCancelBtn = document.getElementById('lockCancelBtn');
         const lockStatus = document.getElementById('lockStatus');
-        const pinInputs = [document.getElementById('pin1'), document.getElementById('pin2'), document.getElementById('pin3'), document.getElementById('pin4')];
+        const pinInputs = [document.getElementById('pin1'), document.getElementById('pin2'), document.getElementById('pin3'),
+            document.getElementById('pin4')
+        ];
 
         function lockPhone() {
             if (lockPassword) {
@@ -549,20 +1695,21 @@
 
         pinInputs.forEach((inp, idx) => {
             inp.addEventListener('input', () => {
-                if (inp.value.length === 1 && idx < 3) pinInputs[idx+1].focus();
+                if (inp.value.length === 1 && idx < 3) pinInputs[idx + 1].focus();
             });
             inp.addEventListener('keydown', (e) => {
-                if (e.key === 'Backspace' && inp.value.length === 0 && idx > 0) pinInputs[idx-1].focus();
+                if (e.key === 'Backspace' && inp.value.length === 0 && idx > 0) pinInputs[idx - 1].focus();
                 if (e.key === 'Enter') unlockPhone();
             });
         });
 
-        // 全局拦截点击应用时，若锁屏则阻止
         document.addEventListener('click', (e) => {
             if (isLocked) {
-                const target = e.target.closest('.app-item') || e.target.closest('.app-window') || e.target.closest('.dock');
+                const target = e.target.closest('.app-item') || e.target.closest('.app-window') || e.target.closest(
+                '.dock');
                 if (target) {
-                    e.preventDefault(); e.stopPropagation();
+                    e.preventDefault();
+                    e.stopPropagation();
                     lockStatus.textContent = '请先解锁';
                     return false;
                 }
@@ -607,7 +1754,10 @@
         }
 
         // ========== 拖拽系统 (与之前一致) ==========
-        let dragState = null, longPressTimer = null, isDragging = false;
+        let dragState = null,
+            longPressTimer = null,
+            isDragging = false;
+
         function initDragSystem() {
             const phone = document.getElementById('phone');
             phone.addEventListener('pointerdown', (e) => {
@@ -619,15 +1769,22 @@
                 const isInDock = item.closest('#dock');
                 if (!isInGrid && !isInDock) return;
                 let container, orderArray;
-                if (isInGrid) { container = 'grid'; orderArray = homeOrder; }
-                else { container = 'dock'; orderArray = dockOrder; }
+                if (isInGrid) { container = 'grid';
+                    orderArray = homeOrder; } else { container = 'dock';
+                    orderArray = dockOrder; }
                 const rect = item.getBoundingClientRect();
                 const appId = item.dataset.appId;
                 dragState = {
-                    element: item, appId, container, order: orderArray,
-                    startX: e.clientX, startY: e.clientY, moved: false,
+                    element: item,
+                    appId,
+                    container,
+                    order: orderArray,
+                    startX: e.clientX,
+                    startY: e.clientY,
+                    moved: false,
                     clone: null,
-                    offsetX: e.clientX - rect.left, offsetY: e.clientY - rect.top,
+                    offsetX: e.clientX - rect.left,
+                    offsetY: e.clientY - rect.top,
                     index: orderArray.indexOf(appId)
                 };
                 longPressTimer = setTimeout(() => {
@@ -639,8 +1796,12 @@
                     clone.className = 'drag-clone';
                     const icon = clone.querySelector('.icon');
                     if (icon) {
-                        icon.style.width = '60px'; icon.style.height = '60px'; icon.style.borderRadius = '16px';
-                        icon.style.display = 'flex'; icon.style.alignItems = 'center'; icon.style.justifyContent = 'center';
+                        icon.style.width = '60px';
+                        icon.style.height = '60px';
+                        icon.style.borderRadius = '16px';
+                        icon.style.display = 'flex';
+                        icon.style.alignItems = 'center';
+                        icon.style.justifyContent = 'center';
                         icon.style.fontSize = '32px';
                     }
                     const label = clone.querySelector('.label');
@@ -654,8 +1815,10 @@
             });
             phone.addEventListener('pointermove', (e) => {
                 if (longPressTimer && dragState) {
-                    const dx = e.clientX - dragState.startX, dy = e.clientY - dragState.startY;
-                    if (Math.sqrt(dx*dx + dy*dy) > 8) { clearTimeout(longPressTimer); longPressTimer = null; }
+                    const dx = e.clientX - dragState.startX,
+                        dy = e.clientY - dragState.startY;
+                    if (Math.sqrt(dx * dx + dy * dy) > 8) { clearTimeout(longPressTimer);
+                        longPressTimer = null; }
                 }
                 if (isDragging && dragState && dragState.clone) {
                     e.preventDefault();
@@ -665,22 +1828,26 @@
                     const targetItem = target ? target.closest('.app-item') : null;
                     document.querySelectorAll('.app-item.drop-zone').forEach(el => el.classList.remove('drop-zone'));
                     if (targetItem && targetItem !== dragState.element) {
-                        const targetContainer = targetItem.closest('#appGrid') ? 'grid' : (targetItem.closest('#dock') ? 'dock' : null);
+                        const targetContainer = targetItem.closest('#appGrid') ? 'grid' : (targetItem.closest('#dock') ?
+                            'dock' : null);
                         if (targetContainer === dragState.container) {
                             const targetId = targetItem.dataset.appId;
                             const targetIndex = dragState.order.indexOf(targetId);
                             const sourceIndex = dragState.order.indexOf(dragState.appId);
                             if (targetIndex !== -1 && sourceIndex !== -1 && targetIndex !== sourceIndex) {
-                                [dragState.order[sourceIndex], dragState.order[targetIndex]] = [dragState.order[targetIndex], dragState.order[sourceIndex]];
+                                [dragState.order[sourceIndex], dragState.order[targetIndex]] = [dragState.order[
+                                    targetIndex], dragState.order[sourceIndex]];
                                 dragState.appId = dragState.order[targetIndex];
                                 if (dragState.container === 'grid') {
                                     renderHomeGrid();
                                     const newEl = document.querySelector(`.app-item[data-app-id="${dragState.appId}"]`);
-                                    if (newEl) { newEl.classList.add('dragging'); dragState.element = newEl; }
+                                    if (newEl) { newEl.classList.add('dragging');
+                                        dragState.element = newEl; }
                                 } else {
                                     renderDock();
                                     const newEl = document.querySelector(`#dock .app-item[data-app-id="${dragState.appId}"]`);
-                                    if (newEl) { newEl.classList.add('dragging'); dragState.element = newEl; }
+                                    if (newEl) { newEl.classList.add('dragging');
+                                        dragState.element = newEl; }
                                 }
                                 if (dragState.container === 'grid') setStorage('homeOrder', homeOrder);
                                 else setStorage('dockOrder', dockOrder);
@@ -690,7 +1857,8 @@
                 }
             });
             phone.addEventListener('pointerup', (e) => {
-                clearTimeout(longPressTimer); longPressTimer = null;
+                clearTimeout(longPressTimer);
+                longPressTimer = null;
                 if (isDragging && dragState) {
                     if (dragState.clone) dragState.clone.remove();
                     if (dragState.element) dragState.element.classList.remove('dragging');
@@ -699,7 +1867,8 @@
                     if (dragState.container === 'grid') setStorage('homeOrder', homeOrder);
                     else setStorage('dockOrder', dockOrder);
                     renderAll();
-                    isDragging = false; dragState = null;
+                    isDragging = false;
+                    dragState = null;
                 } else {
                     if (dragState) {
                         if (dragState.element) dragState.element.classList.remove('dragging');
@@ -717,7 +1886,8 @@
                     document.querySelectorAll('.app-item.drop-zone').forEach(el => el.classList.remove('drop-zone'));
                     document.body.style.userSelect = '';
                     renderAll();
-                    isDragging = false; dragState = null;
+                    isDragging = false;
+                    dragState = null;
                 }
             });
         }
@@ -767,39 +1937,82 @@
                 setTimeout(() => { if (win.parentNode) win.parentNode.removeChild(win); }, 300);
             }
             openApps = openApps.filter(id => id !== appId);
-            if (appId === 'camera' && window._cameraCleanup) { window._cameraCleanup(); window._cameraCleanup = null; }
-            if (appId === 'music' && window._musicCleanup) { window._musicCleanup(); window._musicCleanup = null; }
+            if (appId === 'camera' && window._cameraCleanup) { window._cameraCleanup();
+                window._cameraCleanup = null; }
+            if (appId === 'music' && window._musicCleanup) { window._musicCleanup();
+                window._musicCleanup = null; }
         }
 
         // ========== 渲染各应用内容 ==========
         function renderAppContent(appId, body) {
             switch (appId) {
-                case 'calculator': renderCalculator(body); break;
-                case 'calendar': renderCalendar(body); break;
-                case 'clock': renderClock(body); break;
-                case 'compass': renderCompass(body); break;
-                case 'contacts': renderContacts(body); break;
-                case 'files': renderFiles(body); break;
-                case 'camera': renderCamera(body); break;
-                case 'memo': renderMemo(body); break;
-                case 'reminder': renderReminder(body); break;
-                case 'notes': renderNotes(body); break;
-                case 'translate': renderTranslate(body); break;
-                case 'map': renderMap(body); break;
-                case 'weather': renderWeather(body); break;
-                case 'messages': renderMessages(body); break;
-                case 'mail': renderMail(body); break;
-                case 'phone': renderPhone(body); break;
-                case 'music': renderMusic(body); break;
-                case 'browser': renderBrowser(body); break;
-                case 'settings': renderSettings(body); break;
-                default: body.innerHTML = '<div class="empty-state"><span class="big-emoji">🚧</span>开发中...</div>';
+                case 'calculator':
+                    renderCalculator(body);
+                    break;
+                case 'calendar':
+                    renderCalendar(body);
+                    break;
+                case 'clock':
+                    renderClock(body);
+                    break;
+                case 'compass':
+                    renderCompass(body);
+                    break;
+                case 'contacts':
+                    renderContacts(body);
+                    break;
+                case 'files':
+                    renderFiles(body);
+                    break;
+                case 'camera':
+                    renderCamera(body);
+                    break;
+                case 'memo':
+                    renderMemo(body);
+                    break;
+                case 'reminder':
+                    renderReminder(body);
+                    break;
+                case 'notes':
+                    renderNotes(body);
+                    break;
+                case 'translate':
+                    renderTranslate(body);
+                    break;
+                case 'map':
+                    renderMap(body);
+                    break;
+                case 'weather':
+                    renderWeather(body);
+                    break;
+                case 'messages':
+                    renderMessages(body);
+                    break;
+                case 'mail':
+                    renderMail(body);
+                    break;
+                case 'phone':
+                    renderPhone(body);
+                    break;
+                case 'music':
+                    renderMusic(body);
+                    break;
+                case 'browser':
+                    renderBrowser(body);
+                    break;
+                case 'settings':
+                    renderSettings(body);
+                    break;
+                default:
+                    body.innerHTML = '<div class="empty-state"><span class="big-emoji">🚧</span>开发中...</div>';
             }
         }
 
-        // ----- 已有应用 (与之前一致，但保留完整) -----
+        // ----- 已有应用 (与之前一致) -----
         function renderCalculator(body) {
-            let expr = '', result = '0', justEvaluated = false;
+            let expr = '',
+                result = '0',
+                justEvaluated = false;
             const container = document.createElement('div');
             container.innerHTML = `
                 <div class="calc-display"><div class="expr" id="calcExpr"></div><div class="result" id="calcResult">0</div></div>
@@ -812,39 +2025,82 @@
                 </div>
             `;
             body.appendChild(container);
-            const exprEl = document.getElementById('calcExpr'), resultEl = document.getElementById('calcResult');
-            function update() { exprEl.textContent = expr; resultEl.textContent = result; if (result.length > 10) resultEl.style.fontSize = '28px'; else resultEl.style.fontSize = '42px'; }
-            function evaluate() { try { let e = expr.replace(/×/g,'*').replace(/÷/g,'/').replace(/−/g,'-'); const res = Function('"use strict"; return ('+e+')')(); if (!isFinite(res)) throw 'err'; result = String(parseFloat(res.toFixed(10))); expr = result; justEvaluated = true; } catch { result = '错误'; } update(); }
+            const exprEl = document.getElementById('calcExpr'),
+                resultEl = document.getElementById('calcResult');
+
+            function update() { exprEl.textContent = expr;
+                resultEl.textContent = result; if (result.length > 10) resultEl.style.fontSize = '28px';
+                else resultEl.style.fontSize = '42px'; }
+
+            function evaluate() { try { let e = expr.replace(/×/g, '*').replace(/÷/g, '/').replace(/−/g, '-'); const res =
+                        Function('"use strict"; return (' + e + ')')(); if (!isFinite(res)) throw 'err';
+                    result = String(parseFloat(res.toFixed(10)));
+                    expr = result;
+                    justEvaluated = true; } catch { result = '错误'; } update(); }
             container.querySelectorAll('.calc-grid button').forEach(btn => {
                 btn.addEventListener('click', () => {
                     const v = btn.dataset.v;
-                    if (v === 'AC') { expr = ''; result = '0'; justEvaluated = false; update(); return; }
-                    if (v === '±') { if (result !== '0' && result !== '错误') { result = result.startsWith('-') ? result.slice(1) : '-' + result; expr = result; update(); } return; }
-                    if (v === '%') { if (result !== '0' && result !== '错误') { const num = parseFloat(result); if (!isNaN(num)) { result = String(num/100); expr = result; update(); } } return; }
+                    if (v === 'AC') { expr = '';
+                        result = '0';
+                        justEvaluated = false;
+                        update(); return; }
+                    if (v === '±') { if (result !== '0' && result !== '错误') { result = result.startsWith('-') ?
+                                result.slice(1) : '-' + result;
+                            expr = result;
+                            update(); } return; }
+                    if (v === '%') { if (result !== '0' && result !== '错误') { const num = parseFloat(result); if (!
+                                isNaN(num)) { result = String(num / 100);
+                                expr = result;
+                                update(); } } return; }
                     if (v === '=') { if (expr && !justEvaluated) evaluate(); return; }
-                    if (justEvaluated && !'+-×÷'.includes(v)) { expr = ''; justEvaluated = false; }
-                    if ('+-×÷'.includes(v)) { if (expr && '+-×÷'.includes(expr.slice(-1))) expr = expr.slice(0,-1)+v; else if (expr) expr += v; else if (v === '-') expr = '-'; justEvaluated = false; } else { if (v === '.' && expr.split(/[+\-×÷]/).pop().includes('.')) return; expr += v; try { let e = expr.replace(/×/g,'*').replace(/÷/g,'/').replace(/−/g,'-'); const res = Function('"use strict"; return ('+e+')')(); if (isFinite(res)) result = String(parseFloat(res.toFixed(10))); } catch {} } update();
+                    if (justEvaluated && !'+-×÷'.includes(v)) { expr = '';
+                        justEvaluated = false; }
+                    if ('+-×÷'.includes(v)) { if (expr && '+-×÷'.includes(expr.slice(-1))) expr = expr.slice(0, -1) +
+                            v;
+                        else if (expr) expr += v;
+                        else if (v === '-') expr = '-';
+                        justEvaluated = false; } else { if (v === '.' && expr.split(/[+\-×÷]/).pop().includes('.'))
+                            return;
+                        expr += v; try { let e = expr.replace(/×/g, '*').replace(/÷/g, '/').replace(/−/g, '-'); const
+                                res = Function('"use strict"; return (' + e + ')')(); if (isFinite(res)) result =
+                                String(parseFloat(res.toFixed(10))); } catch {} }
+                    update();
                 });
             });
             update();
         }
 
         function renderCalendar(body) {
-            let year = new Date().getFullYear(), month = new Date().getMonth();
+            let year = new Date().getFullYear(),
+                month = new Date().getMonth();
             const today = new Date();
             const container = document.createElement('div');
             body.appendChild(container);
+
             function render() {
-                const first = new Date(year, month, 1), last = new Date(year, month+1, 0);
-                const startDay = first.getDay(), daysInMonth = last.getDate(), daysInPrev = new Date(year, month, 0).getDate();
+                const first = new Date(year, month, 1),
+                    last = new Date(year, month + 1, 0);
+                const startDay = first.getDay(),
+                    daysInMonth = last.getDate(),
+                    daysInPrev = new Date(year, month, 0).getDate();
                 let html = `<div class="cal-header"><button id="calPrev">‹</button><span class="month">${year}年${month+1}月</span><button id="calNext">›</button></div>
                     <div class="cal-weekdays"><span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span></div><div class="cal-days">`;
-                for (let i = startDay-1; i >= 0; i--) { const d = daysInPrev - i; html += `<div class="day other">${d}</div>`; }
-                for (let d = 1; d <= daysInMonth; d++) { const isToday = (d===today.getDate() && month===today.getMonth() && year===today.getFullYear()); html += `<div class="day ${isToday?'today':''}">${d}</div>`; }
-                const total = startDay + daysInMonth; const remaining = 7 - (total % 7); if (remaining < 7) { for (let d=1; d<=remaining; d++) html += `<div class="day other">${d}</div>`; }
-                html += '</div>'; container.innerHTML = html;
-                document.getElementById('calPrev').addEventListener('click', ()=>{ if (month===0){month=11;year--;}else month--; render(); });
-                document.getElementById('calNext').addEventListener('click', ()=>{ if (month===11){month=0;year++;}else month++; render(); });
+                for (let i = startDay - 1; i >= 0; i--) { const d = daysInPrev - i;
+                    html += `<div class="day other">${d}</div>`; }
+                for (let d = 1; d <= daysInMonth; d++) { const isToday = (d === today.getDate() && month === today
+                        .getMonth() && year === today.getFullYear());
+                    html += `<div class="day ${isToday?'today':''}">${d}</div>`; }
+                const total = startDay + daysInMonth;
+                const remaining = 7 - (total % 7);
+                if (remaining < 7) { for (let d = 1; d <= remaining; d++) html += `<div class="day other">${d}</div>`; }
+                html += '</div>';
+                container.innerHTML = html;
+                document.getElementById('calPrev').addEventListener('click', () => { if (month === 0) { month = 11;
+                        year--; } else month--;
+                    render(); });
+                document.getElementById('calNext').addEventListener('click', () => { if (month === 11) { month = 0;
+                        year++; } else month++;
+                    render(); });
             }
             render();
         }
@@ -855,12 +2111,19 @@
             container.className = 'clock-main';
             body.appendChild(container);
             let alarms = getStorage('alarms', []);
-            let stopwatchRunning = false, stopwatchTime = 0, stopwatchInterval = null;
-            let timerRunning = false, timerRemaining = 0, timerInterval = null, timerTotal = 0;
+            let stopwatchRunning = false,
+                stopwatchTime = 0,
+                stopwatchInterval = null;
+            let timerRunning = false,
+                timerRemaining = 0,
+                timerInterval = null,
+                timerTotal = 0;
 
             function renderClockUI(activeTab = 'alarm') {
                 const now = new Date();
-                const h = String(now.getHours()).padStart(2,'0'), m = String(now.getMinutes()).padStart(2,'0'), s = String(now.getSeconds()).padStart(2,'0');
+                const h = String(now.getHours()).padStart(2, '0'),
+                    m = String(now.getMinutes()).padStart(2, '0'),
+                    s = String(now.getSeconds()).padStart(2, '0');
                 let html = `
                     <div class="time-display">${h}:${m}:${s}</div>
                     <div class="date-display">${formatDate(now)}</div>
@@ -878,10 +2141,18 @@
                 });
                 const content = document.getElementById('clockTabContent');
                 switch (activeTab) {
-                    case 'alarm': renderAlarmTab(content); break;
-                    case 'stopwatch': renderStopwatchTab(content); break;
-                    case 'timer': renderTimerTab(content); break;
-                    case 'world': renderWorldTab(content); break;
+                    case 'alarm':
+                        renderAlarmTab(content);
+                        break;
+                    case 'stopwatch':
+                        renderStopwatchTab(content);
+                        break;
+                    case 'timer':
+                        renderTimerTab(content);
+                        break;
+                    case 'world':
+                        renderWorldTab(content);
+                        break;
                 }
             }
 
@@ -889,24 +2160,37 @@
                 let html = `<div id="alarmList"></div><div class="add-alarm"><input type="time" id="alarmTime" value="08:00"><button id="addAlarm">添加</button></div>`;
                 content.innerHTML = html;
                 const list = document.getElementById('alarmList');
-                if (alarms.length===0) list.innerHTML = '<div class="text-muted" style="padding:8px 0;">暂无闹钟</div>';
+                if (alarms.length === 0) list.innerHTML = '<div class="text-muted" style="padding:8px 0;">暂无闹钟</div>';
                 else {
                     alarms.forEach((alarm, idx) => {
-                        const row = document.createElement('div'); row.className = 'alarm-row';
-                        row.innerHTML = `<span class="time">${alarm.time}</span><button class="toggle ${alarm.on?'on':''}" data-idx="${idx}"></button><button style="background:none;border:none;color:#ff3b30;font-size:16px;cursor:pointer;" data-del="${idx}">✕</button>`;
+                        const row = document.createElement('div');
+                        row.className = 'alarm-row';
+                        row.innerHTML =
+                            `<span class="time">${alarm.time}</span><button class="toggle ${alarm.on?'on':''}" data-idx="${idx}"></button><button style="background:none;border:none;color:#ff3b30;font-size:16px;cursor:pointer;" data-del="${idx}">✕</button>`;
                         list.appendChild(row);
                     });
-                    list.querySelectorAll('.toggle').forEach(btn => { btn.addEventListener('click', ()=>{ const idx=parseInt(btn.dataset.idx); alarms[idx].on=!alarms[idx].on; setStorage('alarms', alarms); renderClockUI('alarm'); }); });
-                    list.querySelectorAll('[data-del]').forEach(btn => { btn.addEventListener('click', ()=>{ const idx=parseInt(btn.dataset.del); alarms.splice(idx,1); setStorage('alarms', alarms); renderClockUI('alarm'); }); });
+                    list.querySelectorAll('.toggle').forEach(btn => { btn.addEventListener('click', () => { const idx =
+                                parseInt(btn.dataset.idx);
+                            alarms[idx].on = !alarms[idx].on;
+                            setStorage('alarms', alarms);
+                            renderClockUI('alarm'); }); });
+                    list.querySelectorAll('[data-del]').forEach(btn => { btn.addEventListener('click', () => { const idx =
+                                parseInt(btn.dataset.del);
+                            alarms.splice(idx, 1);
+                            setStorage('alarms', alarms);
+                            renderClockUI('alarm'); }); });
                 }
-                document.getElementById('addAlarm').addEventListener('click', ()=>{ const inp = document.getElementById('alarmTime'); if(inp.value){ alarms.push({time:inp.value, on:true}); setStorage('alarms', alarms); renderClockUI('alarm'); } });
+                document.getElementById('addAlarm').addEventListener('click', () => { const inp = document.getElementById(
+                        'alarmTime'); if (inp.value) { alarms.push({ time: inp.value, on: true });
+                        setStorage('alarms', alarms);
+                        renderClockUI('alarm'); } });
             }
 
             function renderStopwatchTab(content) {
                 const totalSeconds = Math.floor(stopwatchTime / 1000);
-                const minutes = String(Math.floor(totalSeconds / 60)).padStart(2,'0');
-                const seconds = String(totalSeconds % 60).padStart(2,'0');
-                const centiseconds = String(Math.floor((stopwatchTime % 1000) / 10)).padStart(2,'0');
+                const minutes = String(Math.floor(totalSeconds / 60)).padStart(2, '0');
+                const seconds = String(totalSeconds % 60).padStart(2, '0');
+                const centiseconds = String(Math.floor((stopwatchTime % 1000) / 10)).padStart(2, '0');
                 content.innerHTML = `
                     <div class="stopwatch-display">${minutes}:${seconds}.${centiseconds}</div>
                     <div class="stopwatch-controls">
@@ -918,15 +2202,17 @@
                 `;
                 const laps = getStorage('stopwatchLaps', []);
                 const lapsDiv = document.getElementById('stopwatchLaps');
-                if (laps.length>0) {
+                if (laps.length > 0) {
                     lapsDiv.innerHTML = '<div style="margin-top:12px;font-weight:600;">计次</div>';
                     laps.forEach((lap, i) => {
-                        const div = document.createElement('div'); div.style.padding='4px 0'; div.style.borderBottom='1px solid #f0f0f0';
+                        const div = document.createElement('div');
+                        div.style.padding = '4px 0';
+                        div.style.borderBottom = '1px solid #f0f0f0';
                         div.textContent = `计次 ${i+1}: ${lap}`;
                         lapsDiv.appendChild(div);
                     });
                 }
-                document.getElementById('stopwatchStartStop').addEventListener('click', ()=>{
+                document.getElementById('stopwatchStartStop').addEventListener('click', () => {
                     if (stopwatchRunning) {
                         stopwatchRunning = false;
                         if (stopwatchInterval) clearInterval(stopwatchInterval);
@@ -942,18 +2228,20 @@
                         renderClockUI('stopwatch');
                     }
                 });
-                document.getElementById('stopwatchReset').addEventListener('click', ()=>{
+                document.getElementById('stopwatchReset').addEventListener('click', () => {
                     if (stopwatchInterval) clearInterval(stopwatchInterval);
-                    stopwatchRunning = false; stopwatchTime = 0;
+                    stopwatchRunning = false;
+                    stopwatchTime = 0;
                     setStorage('stopwatchLaps', []);
                     renderClockUI('stopwatch');
                 });
-                document.getElementById('stopwatchLap').addEventListener('click', ()=>{
+                document.getElementById('stopwatchLap').addEventListener('click', () => {
                     if (stopwatchRunning) {
                         const totalSeconds = Math.floor(stopwatchTime / 1000);
-                        const minutes = String(Math.floor(totalSeconds / 60)).padStart(2,'0');
-                        const seconds = String(totalSeconds % 60).padStart(2,'0');
-                        const centiseconds = String(Math.floor((stopwatchTime % 1000) / 10)).padStart(2,'0');
+                        const minutes = String(Math.floor(totalSeconds / 60)).padStart(2, '0');
+                        const seconds = String(totalSeconds % 60).padStart(2, '0');
+                        const centiseconds = String(Math.floor((stopwatchTime % 1000) / 10)).padStart(2,
+                        '0');
                         const lapStr = `${minutes}:${seconds}.${centiseconds}`;
                         const laps = getStorage('stopwatchLaps', []);
                         laps.push(lapStr);
@@ -965,9 +2253,9 @@
 
             function renderTimerTab(content) {
                 const totalSeconds = Math.floor(timerRemaining / 1000);
-                const minutes = String(Math.floor(totalSeconds / 60)).padStart(2,'0');
-                const seconds = String(totalSeconds % 60).padStart(2,'0');
-                const centiseconds = String(Math.floor((timerRemaining % 1000) / 10)).padStart(2,'0');
+                const minutes = String(Math.floor(totalSeconds / 60)).padStart(2, '0');
+                const seconds = String(totalSeconds % 60).padStart(2, '0');
+                const centiseconds = String(Math.floor((timerRemaining % 1000) / 10)).padStart(2, '0');
                 content.innerHTML = `
                     <div class="timer-display">${minutes}:${seconds}.${centiseconds}</div>
                     <div class="timer-input">
@@ -981,7 +2269,7 @@
                         <button id="timerReset">重置</button>
                     </div>
                 `;
-                document.getElementById('timerStartStop').addEventListener('click', ()=>{
+                document.getElementById('timerStartStop').addEventListener('click', () => {
                     if (timerRunning) {
                         timerRunning = false;
                         if (timerInterval) clearInterval(timerInterval);
@@ -1001,8 +2289,10 @@
                             const elapsed = Date.now() - startTime;
                             timerRemaining = timerTotal - elapsed;
                             if (timerRemaining <= 0) {
-                                timerRemaining = 0; timerRunning = false;
-                                clearInterval(interval); timerInterval = null;
+                                timerRemaining = 0;
+                                timerRunning = false;
+                                clearInterval(interval);
+                                timerInterval = null;
                                 alert('计时结束！');
                                 renderClockUI('timer');
                                 return;
@@ -1013,19 +2303,25 @@
                         renderClockUI('timer');
                     }
                 });
-                document.getElementById('timerReset').addEventListener('click', ()=>{
+                document.getElementById('timerReset').addEventListener('click', () => {
                     if (timerInterval) clearInterval(timerInterval);
-                    timerRunning = false; timerRemaining = 0; timerTotal = 0;
+                    timerRunning = false;
+                    timerRemaining = 0;
+                    timerTotal = 0;
                     renderClockUI('timer');
                 });
             }
 
             function renderWorldTab(content) {
                 const cities = [
-                    { name: '北京', offset: 8 }, { name: '东京', offset: 9 },
-                    { name: '纽约', offset: -4 }, { name: '伦敦', offset: 0 },
-                    { name: '巴黎', offset: 1 }, { name: '悉尼', offset: 10 },
-                    { name: '迪拜', offset: 4 }, { name: '莫斯科', offset: 3 }
+                    { name: '北京', offset: 8 },
+                    { name: '东京', offset: 9 },
+                    { name: '纽约', offset: -4 },
+                    { name: '伦敦', offset: 0 },
+                    { name: '巴黎', offset: 1 },
+                    { name: '悉尼', offset: 10 },
+                    { name: '迪拜', offset: 4 },
+                    { name: '莫斯科', offset: 3 }
                 ];
                 const now = new Date();
                 const localOffset = -now.getTimezoneOffset() / 60;
@@ -1033,7 +2329,8 @@
                 cities.forEach(city => {
                     const diff = city.offset - localOffset;
                     const d = new Date(now.getTime() + diff * 3600 * 1000);
-                    html += `<div class="world-clock-item"><span class="city">${city.name}</span><span class="time">${formatTime(d)}</span></div>`;
+                    html +=
+                        `<div class="world-clock-item"><span class="city">${city.name}</span><span class="time">${formatTime(d)}</span></div>`;
                 });
                 html += '</div>';
                 content.innerHTML = html;
@@ -1042,7 +2339,9 @@
             renderClockUI('alarm');
             const interval = setInterval(() => {
                 const now = new Date();
-                const h = String(now.getHours()).padStart(2,'0'), m = String(now.getMinutes()).padStart(2,'0'), s = String(now.getSeconds()).padStart(2,'0');
+                const h = String(now.getHours()).padStart(2, '0'),
+                    m = String(now.getMinutes()).padStart(2, '0'),
+                    s = String(now.getSeconds()).padStart(2, '0');
                 const timeEl = container.querySelector('.time-display');
                 const dateEl = container.querySelector('.date-display');
                 if (timeEl) timeEl.textContent = `${h}:${m}:${s}`;
@@ -1059,25 +2358,62 @@
 
         // ----- 指南针 -----
         function renderCompass(body) {
-            const container = document.createElement('div'); container.className = 'compass-container'; body.appendChild(container);
+            const container = document.createElement('div');
+            container.className = 'compass-container';
+            body.appendChild(container);
             let angle = 0;
-            container.innerHTML = `<div class="compass-ring" id="compassRing"><div class="direction-label dir-n">N</div><div class="direction-label dir-e">E</div><div class="direction-label dir-s">S</div><div class="direction-label dir-w">W</div><div class="needle" id="compassNeedle" style="transform:translate(-50%,-100%) rotate(0deg);"></div><div class="center-dot"></div></div>
+            container.innerHTML =
+                `<div class="compass-ring" id="compassRing"><div class="direction-label dir-n">N</div><div class="direction-label dir-e">E</div><div class="direction-label dir-s">S</div><div class="direction-label dir-w">W</div><div class="needle" id="compassNeedle" style="transform:translate(-50%,-100%) rotate(0deg);"></div><div class="center-dot"></div></div>
                 <div class="compass-degree" id="compassDegree">0° <small>N</small></div><div class="compass-dir-text" id="compassDirText">正北</div>
                 <div class="text-muted mt-8">${window.DeviceOrientationEvent ? '🟢 传感器已连接' : '⚠️ 请使用支持陀螺仪的设备'}</div>`;
-            const needle = document.getElementById('compassNeedle'), degreeEl = document.getElementById('compassDegree'), dirText = document.getElementById('compassDirText');
-            function updateCompass(deg) { angle = deg; needle.style.transform = `translate(-50%,-100%) rotate(${deg}deg)`; const d = Math.round(deg); degreeEl.innerHTML = `${d}° <small>${getDirText(deg)}</small>`; dirText.textContent = getDirName(deg); }
-            function getDirText(deg) { const dirs = ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW']; const idx = Math.round(deg/22.5)%16; return dirs[idx]||'N'; }
-            function getDirName(deg) { const names = ['正北','北偏东','东北','东偏北','正东','东偏南','东南','南偏东','正南','南偏西','西南','西偏南','正西','西偏北','西北','北偏西']; const idx = Math.round(deg/22.5)%16; return names[idx]||'正北'; }
+            const needle = document.getElementById('compassNeedle'),
+                degreeEl = document.getElementById('compassDegree'),
+                dirText = document.getElementById('compassDirText');
+
+            function updateCompass(deg) { angle = deg;
+                needle.style.transform = `translate(-50%,-100%) rotate(${deg}deg)`;
+                const d = Math.round(deg);
+                degreeEl.innerHTML = `${d}° <small>${getDirText(deg)}</small>`;
+                dirText.textContent = getDirName(deg); }
+
+            function getDirText(deg) { const dirs = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW',
+                    'W', 'WNW', 'NW', 'NNW'
+                ];
+                const idx = Math.round(deg / 22.5) % 16;
+                return dirs[idx] || 'N'; }
+
+            function getDirName(deg) { const names = ['正北', '北偏东', '东北', '东偏北', '正东', '东偏南', '东南', '南偏东', '正南', '南偏西',
+                    '西南', '西偏南', '正西', '西偏北', '西北', '北偏西'
+                ];
+                const idx = Math.round(deg / 22.5) % 16;
+                return names[idx] || '正北'; }
             if (window.DeviceOrientationEvent) {
                 if (typeof DeviceOrientationEvent.requestPermission === 'function') {
-                    DeviceOrientationEvent.requestPermission().then(state => { if (state === 'granted') window.addEventListener('deviceorientation', handleOrientation); }).catch(()=>{});
+                    DeviceOrientationEvent.requestPermission().then(state => { if (state === 'granted') window
+                            .addEventListener('deviceorientation', handleOrientation); }).catch(() => {});
                 } else { window.addEventListener('deviceorientation', handleOrientation); }
             }
-            function handleOrientation(e) { let deg = e.webkitCompassHeading || e.alpha || 0; if (deg === null || deg === undefined) deg = e.alpha || 0; updateCompass(deg); }
+
+            function handleOrientation(e) { let deg = e.webkitCompassHeading || e.alpha || 0; if (deg === null || deg ===
+                    undefined) deg = e.alpha || 0;
+                updateCompass(deg); }
             if (!window.DeviceOrientationEvent) {
                 let mouseAngle = 0;
-                container.addEventListener('mousemove', (e) => { const rect = container.getBoundingClientRect(); const cx = rect.left + rect.width/2, cy = rect.top + rect.height/2; const dx = e.clientX - cx, dy = e.clientY - cy; mouseAngle = Math.atan2(dx, -dy) * (180/Math.PI); if (mouseAngle < 0) mouseAngle += 360; updateCompass(mouseAngle); });
-                container.addEventListener('touchmove', (e) => { const touch = e.touches[0]; const rect = container.getBoundingClientRect(); const cx = rect.left + rect.width/2, cy = rect.top + rect.height/2; const dx = touch.clientX - cx, dy = touch.clientY - cy; mouseAngle = Math.atan2(dx, -dy) * (180/Math.PI); if (mouseAngle < 0) mouseAngle += 360; updateCompass(mouseAngle); });
+                container.addEventListener('mousemove', (e) => { const rect = container.getBoundingClientRect();
+                    const cx = rect.left + rect.width / 2,
+                        cy = rect.top + rect.height / 2;
+                    const dx = e.clientX - cx,
+                        dy = e.clientY - cy;
+                    mouseAngle = Math.atan2(dx, -dy) * (180 / Math.PI); if (mouseAngle < 0) mouseAngle += 360;
+                    updateCompass(mouseAngle); });
+                container.addEventListener('touchmove', (e) => { const touch = e.touches[0]; const rect = container
+                        .getBoundingClientRect();
+                    const cx = rect.left + rect.width / 2,
+                        cy = rect.top + rect.height / 2;
+                    const dx = touch.clientX - cx,
+                        dy = touch.clientY - cy;
+                    mouseAngle = Math.atan2(dx, -dy) * (180 / Math.PI); if (mouseAngle < 0) mouseAngle += 360;
+                    updateCompass(mouseAngle); });
                 updateCompass(0);
             }
         }
@@ -1085,50 +2421,82 @@
         // ----- 通讯录 -----
         function renderContacts(body) {
             let contacts = getStorage('contacts', []);
+
             function render() {
-                let html = `<div class="contact-form"><input id="contactName" placeholder="姓名" style="flex:2;"><input id="contactPhone" placeholder="电话" style="flex:2;"><button id="addContact">添加</button></div><div id="contactList" class="mt-12"></div>`;
+                let html =
+                    `<div class="contact-form"><input id="contactName" placeholder="姓名" style="flex:2;"><input id="contactPhone" placeholder="电话" style="flex:2;"><button id="addContact">添加</button></div><div id="contactList" class="mt-12"></div>`;
                 body.innerHTML = html;
                 const list = document.getElementById('contactList');
-                if (contacts.length===0) list.innerHTML = '<div class="empty-state"><span class="big-emoji">👤</span>暂无联系人</div>';
+                if (contacts.length === 0) list.innerHTML =
+                '<div class="empty-state"><span class="big-emoji">👤</span>暂无联系人</div>';
                 else {
                     contacts.forEach((c, idx) => {
-                        const div = document.createElement('div'); div.className = 'contact-item';
+                        const div = document.createElement('div');
+                        div.className = 'contact-item';
                         const initial = c.name ? c.name.charAt(0).toUpperCase() : '?';
-                        div.innerHTML = `<div class="avatar">${initial}</div><div class="info"><div class="name">${c.name}</div><div class="phone">${c.phone}</div></div>
+                        div.innerHTML =
+                            `<div class="avatar">${initial}</div><div class="info"><div class="name">${c.name}</div><div class="phone">${c.phone}</div></div>
                             <button class="del-btn" data-idx="${idx}">✕</button>
                             <button class="call-btn" style="background:none;border:none;font-size:18px;cursor:pointer;color:#4caf50;" data-phone="${c.phone}">📞</button>
                             <button class="sms-btn" style="background:none;border:none;font-size:18px;cursor:pointer;color:#2979ff;" data-phone="${c.phone}">✉️</button>`;
                         list.appendChild(div);
                     });
-                    list.querySelectorAll('.del-btn').forEach(btn => { btn.addEventListener('click', ()=>{ const idx=parseInt(btn.dataset.idx); contacts.splice(idx,1); setStorage('contacts', contacts); render(); }); });
-                    list.querySelectorAll('.call-btn').forEach(btn => { btn.addEventListener('click', ()=>{ const phone = btn.dataset.phone; if(phone) window.location.href = 'tel://'+phone; }); });
-                    list.querySelectorAll('.sms-btn').forEach(btn => { btn.addEventListener('click', ()=>{ const phone = btn.dataset.phone; if(phone) window.location.href = 'sms://'+phone; }); });
+                    list.querySelectorAll('.del-btn').forEach(btn => { btn.addEventListener('click', () => { const idx =
+                                parseInt(btn.dataset.idx);
+                            contacts.splice(idx, 1);
+                            setStorage('contacts', contacts);
+                            render(); }); });
+                    list.querySelectorAll('.call-btn').forEach(btn => { btn.addEventListener('click', () => { const phone =
+                                btn.dataset.phone; if (phone) window.location.href = 'tel://' + phone; }); });
+                    list.querySelectorAll('.sms-btn').forEach(btn => { btn.addEventListener('click', () => { const phone =
+                                btn.dataset.phone; if (phone) window.location.href = 'sms://' + phone; }); });
                 }
-                document.getElementById('addContact').addEventListener('click', ()=>{ const name = document.getElementById('contactName').value.trim(), phone = document.getElementById('contactPhone').value.trim(); if(name && phone){ contacts.push({name, phone}); setStorage('contacts', contacts); render(); } else alert('请填写姓名和电话'); });
+                document.getElementById('addContact').addEventListener('click', () => { const name = document
+                        .getElementById('contactName').value.trim(),
+                        phone = document.getElementById('contactPhone').value.trim(); if (name && phone) { contacts
+                            .push({ name, phone });
+                        setStorage('contacts', contacts);
+                        render(); } else alert('请填写姓名和电话'); });
             }
             render();
         }
 
         // ----- 文件管理 -----
         function renderFiles(body) {
-            let files = getStorage('files', [{name:'文档', size:'12KB', type:'folder'},{name:'图片', size:'8KB', type:'folder'},{name:'readme.txt', size:'2KB', type:'file'}]);
+            let files = getStorage('files', [{ name: '文档', size: '12KB', type: 'folder' }, { name: '图片', size: '8KB',
+                    type: 'folder' }, { name: 'readme.txt', size: '2KB', type: 'file' }]);
+
             function render() {
-                let html = `<div class="file-toolbar"><button class="primary" id="newFolder">📁 新建文件夹</button><button id="newFile">📄 新建文件</button><button id="refreshFiles">🔄 刷新</button></div><div id="fileList"></div>`;
+                let html =
+                    `<div class="file-toolbar"><button class="primary" id="newFolder">📁 新建文件夹</button><button id="newFile">📄 新建文件</button><button id="refreshFiles">🔄 刷新</button></div><div id="fileList"></div>`;
                 body.innerHTML = html;
                 const list = document.getElementById('fileList');
-                if (files.length===0) list.innerHTML = '<div class="empty-state"><span class="big-emoji">📂</span>暂无文件</div>';
+                if (files.length === 0) list.innerHTML =
+                '<div class="empty-state"><span class="big-emoji">📂</span>暂无文件</div>';
                 else {
                     files.forEach((f, idx) => {
-                        const div = document.createElement('div'); div.className = 'file-item';
+                        const div = document.createElement('div');
+                        div.className = 'file-item';
                         const icon = f.type === 'folder' ? '📁' : '📄';
-                        div.innerHTML = `<span class="ficon">${icon}</span><span class="fname">${f.name}</span><span class="fsize">${f.size||'--'}</span><button class="del-btn" style="background:none;border:none;color:#ff3b30;cursor:pointer;font-size:16px;" data-idx="${idx}">✕</button>`;
+                        div.innerHTML =
+                            `<span class="ficon">${icon}</span><span class="fname">${f.name}</span><span class="fsize">${f.size||'--'}</span><button class="del-btn" style="background:none;border:none;color:#ff3b30;cursor:pointer;font-size:16px;" data-idx="${idx}">✕</button>`;
                         list.appendChild(div);
                     });
-                    list.querySelectorAll('.del-btn').forEach(btn => { btn.addEventListener('click', ()=>{ const idx=parseInt(btn.dataset.idx); files.splice(idx,1); setStorage('files', files); render(); }); });
+                    list.querySelectorAll('.del-btn').forEach(btn => { btn.addEventListener('click', () => { const idx =
+                                parseInt(btn.dataset.idx);
+                            files.splice(idx, 1);
+                            setStorage('files', files);
+                            render(); }); });
                 }
-                document.getElementById('newFolder').addEventListener('click', ()=>{ const name = prompt('输入文件夹名称:','新建文件夹'); if(name){ files.push({name, size:'--', type:'folder'}); setStorage('files', files); render(); } });
-                document.getElementById('newFile').addEventListener('click', ()=>{ const name = prompt('输入文件名:','新建文件.txt'); if(name){ files.push({name, size:'0KB', type:'file'}); setStorage('files', files); render(); } });
-                document.getElementById('refreshFiles').addEventListener('click', ()=>{ render(); });
+                document.getElementById('newFolder').addEventListener('click', () => { const name = prompt('输入文件夹名称:',
+                        '新建文件夹'); if (name) { files.push({ name, size: '--', type: 'folder' });
+                        setStorage('files', files);
+                        render(); } });
+                document.getElementById('newFile').addEventListener('click', () => { const name = prompt('输入文件名:',
+                        '新建文件.txt'); if (name) { files.push({ name, size: '0KB', type: 'file' });
+                        setStorage('files', files);
+                        render(); } });
+                document.getElementById('refreshFiles').addEventListener('click', () => { render(); });
             }
             render();
         }
@@ -1136,32 +2504,70 @@
         // ----- 相机及相册 -----
         function renderCamera(body) {
             let photos = getStorage('photos', []);
-            let stream = null, facingMode = 'environment';
+            let stream = null,
+                facingMode = 'environment';
+
             function render() {
-                let html = `<div class="camera-view" id="cameraView"><video id="cameraVideo" autoplay playsinline style="display:none;"></video><div class="placeholder" id="cameraPlaceholder">📷 点击下方 "开启相机"</div></div>
+                let html =
+                    `<div class="camera-view" id="cameraView"><video id="cameraVideo" autoplay playsinline style="display:none;"></video><div class="placeholder" id="cameraPlaceholder">📷 点击下方 "开启相机"</div></div>
                     <div class="camera-actions"><button class="switch-cam" id="switchCam">🔄 切换</button><button class="capture" id="captureBtn" disabled>📸 拍照</button><button id="clearPhotos">🗑️ 清空相册</button></div>
                     <div class="photo-grid" id="photoGrid"></div>`;
                 body.innerHTML = html;
-                const video = document.getElementById('cameraVideo'), placeholder = document.getElementById('cameraPlaceholder'), captureBtn = document.getElementById('captureBtn');
+                const video = document.getElementById('cameraVideo'),
+                    placeholder = document.getElementById('cameraPlaceholder'),
+                    captureBtn = document.getElementById('captureBtn');
                 const grid = document.getElementById('photoGrid');
-                if (photos.length===0) grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><span class="big-emoji">🖼️</span>暂无照片</div>';
+                if (photos.length === 0) grid.innerHTML =
+                    '<div class="empty-state" style="grid-column:1/-1;"><span class="big-emoji">🖼️</span>暂无照片</div>';
                 else {
                     photos.forEach((p, idx) => {
-                        const div = document.createElement('div'); div.className = 'photo';
-                        div.innerHTML = `<img src="${p.data}" alt="photo"><button class="del-photo" data-idx="${idx}">✕</button>`;
+                        const div = document.createElement('div');
+                        div.className = 'photo';
+                        div.innerHTML =
+                            `<img src="${p.data}" alt="photo"><button class="del-photo" data-idx="${idx}">✕</button>`;
                         grid.appendChild(div);
                     });
-                    grid.querySelectorAll('.del-photo').forEach(btn => { btn.addEventListener('click', (e)=>{ e.stopPropagation(); const idx=parseInt(btn.dataset.idx); photos.splice(idx,1); setStorage('photos', photos); render(); }); });
+                    grid.querySelectorAll('.del-photo').forEach(btn => { btn.addEventListener('click', (e) => { e
+                                .stopPropagation(); const idx = parseInt(btn.dataset.idx);
+                            photos.splice(idx, 1);
+                            setStorage('photos', photos);
+                            render(); }); });
                 }
                 let camActive = false;
+
                 async function startCamera() {
-                    try { if (stream) { stream.getTracks().forEach(t=>t.stop()); stream=null; } const constraints = { video: { facingMode: facingMode, width: { ideal: 640 }, height: { ideal: 480 } }, audio: false }; stream = await navigator.mediaDevices.getUserMedia(constraints); video.srcObject = stream; video.style.display = 'block'; placeholder.style.display = 'none'; captureBtn.disabled = false; camActive = true; window._cameraCleanup = ()=>{ if(stream){ stream.getTracks().forEach(t=>t.stop()); stream=null; } }; } catch(err) { alert('无法访问相机: '+err.message); placeholder.textContent = '⚠️ 无法访问相机'; captureBtn.disabled = true; }
+                    try { if (stream) { stream.getTracks().forEach(t => t.stop());
+                            stream = null; } const constraints = { video: { facingMode: facingMode, width: { ideal: 640 },
+                                height: { ideal: 480 } }, audio: false };
+                        stream = await navigator.mediaDevices.getUserMedia(constraints);
+                        video.srcObject = stream;
+                        video.style.display = 'block';
+                        placeholder.style.display = 'none';
+                        captureBtn.disabled = false;
+                        camActive = true;
+                        window._cameraCleanup = () => { if (stream) { stream.getTracks().forEach(t => t.stop());
+                                stream = null; } }; } catch (err) { alert('无法访问相机: ' + err.message);
+                        placeholder.textContent = '⚠️ 无法访问相机';
+                        captureBtn.disabled = true; }
                 }
                 const view = document.getElementById('cameraView');
-                view.addEventListener('click', ()=>{ if(!camActive) startCamera(); });
-                document.getElementById('switchCam').addEventListener('click', ()=>{ facingMode = facingMode==='environment'?'user':'environment'; if(camActive) startCamera(); });
-                captureBtn.addEventListener('click', ()=>{ if(!camActive || !stream) return; const canvas = document.createElement('canvas'); canvas.width = video.videoWidth || 640; canvas.height = video.videoHeight || 480; const ctx = canvas.getContext('2d'); ctx.drawImage(video, 0, 0, canvas.width, canvas.height); const data = canvas.toDataURL('image/jpeg'); photos.push({data, time: new Date().toLocaleString()}); setStorage('photos', photos); render(); if(camActive) startCamera(); });
-                document.getElementById('clearPhotos').addEventListener('click', ()=>{ if(confirm('确定清空所有照片吗？')){ photos=[]; setStorage('photos', photos); render(); if(camActive) startCamera(); } });
+                view.addEventListener('click', () => { if (!camActive) startCamera(); });
+                document.getElementById('switchCam').addEventListener('click', () => { facingMode = facingMode ===
+                        'environment' ? 'user' : 'environment'; if (camActive) startCamera(); });
+                captureBtn.addEventListener('click', () => { if (!camActive || !stream) return; const canvas =
+                        document.createElement('canvas');
+                    canvas.width = video.videoWidth || 640;
+                    canvas.height = video.videoHeight || 480;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                    const data = canvas.toDataURL('image/jpeg');
+                    photos.push({ data, time: new Date().toLocaleString() });
+                    setStorage('photos', photos);
+                    render(); if (camActive) startCamera(); });
+                document.getElementById('clearPhotos').addEventListener('click', () => { if (confirm('确定清空所有照片吗？')) { photos =
+                            [];
+                        setStorage('photos', photos);
+                        render(); if (camActive) startCamera(); } });
                 startCamera();
             }
             render();
@@ -1170,21 +2576,37 @@
         // ----- 备忘录 -----
         function renderMemo(body) {
             let memos = getStorage('memos', []);
+
             function render() {
-                let html = `<div class="note-editor"><input id="memoTitle" placeholder="标题"><textarea id="memoBody" placeholder="内容..."></textarea><div class="note-actions"><button class="cancel" id="memoCancel">取消</button><button class="save" id="memoSave">保存</button></div></div><div id="memoList" class="mt-12"></div>`;
+                let html =
+                    `<div class="note-editor"><input id="memoTitle" placeholder="标题"><textarea id="memoBody" placeholder="内容..."></textarea><div class="note-actions"><button class="cancel" id="memoCancel">取消</button><button class="save" id="memoSave">保存</button></div></div><div id="memoList" class="mt-12"></div>`;
                 body.innerHTML = html;
                 const list = document.getElementById('memoList');
-                if (memos.length===0) list.innerHTML = '<div class="empty-state"><span class="big-emoji">📝</span>暂无备忘录</div>';
+                if (memos.length === 0) list.innerHTML =
+                '<div class="empty-state"><span class="big-emoji">📝</span>暂无备忘录</div>';
                 else {
                     memos.forEach((m, idx) => {
-                        const div = document.createElement('div'); div.className = 'note-item';
-                        div.innerHTML = `<div class="note-title">${m.title||'无标题'}</div><div class="note-body">${m.body||''}</div><div class="note-meta"><span>${m.time||''}</span><button class="del-note" data-idx="${idx}">删除</button></div>`;
+                        const div = document.createElement('div');
+                        div.className = 'note-item';
+                        div.innerHTML =
+                            `<div class="note-title">${m.title||'无标题'}</div><div class="note-body">${m.body||''}</div><div class="note-meta"><span>${m.time||''}</span><button class="del-note" data-idx="${idx}">删除</button></div>`;
                         list.appendChild(div);
                     });
-                    list.querySelectorAll('.del-note').forEach(btn => { btn.addEventListener('click', ()=>{ const idx=parseInt(btn.dataset.idx); memos.splice(idx,1); setStorage('memos', memos); render(); }); });
+                    list.querySelectorAll('.del-note').forEach(btn => { btn.addEventListener('click', () => { const idx =
+                                parseInt(btn.dataset.idx);
+                            memos.splice(idx, 1);
+                            setStorage('memos', memos);
+                            render(); }); });
                 }
-                document.getElementById('memoSave').addEventListener('click', ()=>{ const title = document.getElementById('memoTitle').value.trim()||'无标题'; const body = document.getElementById('memoBody').value.trim(); if(body){ memos.push({title, body, time: new Date().toLocaleString()}); setStorage('memos', memos); render(); } else alert('请输入内容'); });
-                document.getElementById('memoCancel').addEventListener('click', ()=>{ document.getElementById('memoTitle').value=''; document.getElementById('memoBody').value=''; });
+                document.getElementById('memoSave').addEventListener('click', () => { const title = document
+                        .getElementById('memoTitle').value.trim() || '无标题'; const body = document.getElementById(
+                        'memoBody').value.trim(); if (body) { memos.push({ title, body, time: new Date()
+                            .toLocaleString() });
+                        setStorage('memos', memos);
+                        render(); } else alert('请输入内容'); });
+                document.getElementById('memoCancel').addEventListener('click', () => { document.getElementById(
+                        'memoTitle').value = '';
+                    document.getElementById('memoBody').value = ''; });
             }
             render();
         }
@@ -1192,24 +2614,39 @@
         // ----- 提醒事项 -----
         function renderReminder(body) {
             let reminders = getStorage('reminders', []);
+
             function render() {
-                let html = `<div class="note-editor"><input id="reminderTitle" placeholder="提醒内容"><input id="reminderTime" type="datetime-local"><div class="note-actions"><button class="cancel" id="reminderCancel">取消</button><button class="save" id="reminderSave">添加提醒</button></div></div><div id="reminderList" class="mt-12"></div>`;
+                let html =
+                    `<div class="note-editor"><input id="reminderTitle" placeholder="提醒内容"><input id="reminderTime" type="datetime-local"><div class="note-actions"><button class="cancel" id="reminderCancel">取消</button><button class="save" id="reminderSave">添加提醒</button></div></div><div id="reminderList" class="mt-12"></div>`;
                 body.innerHTML = html;
                 const list = document.getElementById('reminderList');
-                if (reminders.length===0) list.innerHTML = '<div class="empty-state"><span class="big-emoji">⏰</span>暂无提醒</div>';
+                if (reminders.length === 0) list.innerHTML =
+                '<div class="empty-state"><span class="big-emoji">⏰</span>暂无提醒</div>';
                 else {
                     const now = Date.now();
                     reminders.forEach((r, idx) => {
-                        const div = document.createElement('div'); div.className = 'note-item';
+                        const div = document.createElement('div');
+                        div.className = 'note-item';
                         const isPast = r.time && new Date(r.time).getTime() < now;
                         div.style.borderLeftColor = isPast ? '#999' : '#e65100';
-                        div.innerHTML = `<div class="note-title">${r.title||'提醒'}</div><div class="note-body">${r.time ? new Date(r.time).toLocaleString() : '无时间'}</div><div class="note-meta"><span>${isPast ? '⏳ 已过期' : '⏰ 待提醒'}</span><button class="del-note" data-idx="${idx}">删除</button></div>`;
+                        div.innerHTML =
+                            `<div class="note-title">${r.title||'提醒'}</div><div class="note-body">${r.time ? new Date(r.time).toLocaleString() : '无时间'}</div><div class="note-meta"><span>${isPast ? '⏳ 已过期' : '⏰ 待提醒'}</span><button class="del-note" data-idx="${idx}">删除</button></div>`;
                         list.appendChild(div);
                     });
-                    list.querySelectorAll('.del-note').forEach(btn => { btn.addEventListener('click', ()=>{ const idx=parseInt(btn.dataset.idx); reminders.splice(idx,1); setStorage('reminders', reminders); render(); }); });
+                    list.querySelectorAll('.del-note').forEach(btn => { btn.addEventListener('click', () => { const idx =
+                                parseInt(btn.dataset.idx);
+                            reminders.splice(idx, 1);
+                            setStorage('reminders', reminders);
+                            render(); }); });
                 }
-                document.getElementById('reminderSave').addEventListener('click', ()=>{ const title = document.getElementById('reminderTitle').value.trim()||'提醒事项'; const time = document.getElementById('reminderTime').value; if(time){ reminders.push({title, time}); setStorage('reminders', reminders); render(); } else alert('请选择时间'); });
-                document.getElementById('reminderCancel').addEventListener('click', ()=>{ document.getElementById('reminderTitle').value=''; document.getElementById('reminderTime').value=''; });
+                document.getElementById('reminderSave').addEventListener('click', () => { const title = document
+                        .getElementById('reminderTitle').value.trim() || '提醒事项'; const time = document.getElementById(
+                        'reminderTime').value; if (time) { reminders.push({ title, time });
+                        setStorage('reminders', reminders);
+                        render(); } else alert('请选择时间'); });
+                document.getElementById('reminderCancel').addEventListener('click', () => { document.getElementById(
+                        'reminderTitle').value = '';
+                    document.getElementById('reminderTime').value = ''; });
             }
             render();
         }
@@ -1217,85 +2654,143 @@
         // ----- 提示 (便签) -----
         function renderNotes(body) {
             let notes = getStorage('notes', []);
+
             function render() {
-                let html = `<div class="note-editor"><input id="noteTitle" placeholder="标题 (可选)"><textarea id="noteBody" placeholder="便签内容..."></textarea><div class="note-actions"><button class="cancel" id="noteCancel">取消</button><button class="save" id="noteSave">保存便签</button></div></div><div id="noteList" class="mt-12"></div>`;
+                let html =
+                    `<div class="note-editor"><input id="noteTitle" placeholder="标题 (可选)"><textarea id="noteBody" placeholder="便签内容..."></textarea><div class="note-actions"><button class="cancel" id="noteCancel">取消</button><button class="save" id="noteSave">保存便签</button></div></div><div id="noteList" class="mt-12"></div>`;
                 body.innerHTML = html;
                 const list = document.getElementById('noteList');
-                if (notes.length===0) list.innerHTML = '<div class="empty-state"><span class="big-emoji">💡</span>暂无便签</div>';
+                if (notes.length === 0) list.innerHTML =
+                '<div class="empty-state"><span class="big-emoji">💡</span>暂无便签</div>';
                 else {
                     notes.forEach((n, idx) => {
-                        const div = document.createElement('div'); div.className = 'note-item';
-                        div.innerHTML = `<div class="note-title">${n.title||'便签'}</div><div class="note-body">${n.body||''}</div><div class="note-meta"><span>${n.time||''}</span><button class="del-note" data-idx="${idx}">删除</button></div>`;
+                        const div = document.createElement('div');
+                        div.className = 'note-item';
+                        div.innerHTML =
+                            `<div class="note-title">${n.title||'便签'}</div><div class="note-body">${n.body||''}</div><div class="note-meta"><span>${n.time||''}</span><button class="del-note" data-idx="${idx}">删除</button></div>`;
                         list.appendChild(div);
                     });
-                    list.querySelectorAll('.del-note').forEach(btn => { btn.addEventListener('click', ()=>{ const idx=parseInt(btn.dataset.idx); notes.splice(idx,1); setStorage('notes', notes); render(); }); });
+                    list.querySelectorAll('.del-note').forEach(btn => { btn.addEventListener('click', () => { const idx =
+                                parseInt(btn.dataset.idx);
+                            notes.splice(idx, 1);
+                            setStorage('notes', notes);
+                            render(); }); });
                 }
-                document.getElementById('noteSave').addEventListener('click', ()=>{ const title = document.getElementById('noteTitle').value.trim()||'便签'; const body = document.getElementById('noteBody').value.trim(); if(body){ notes.push({title, body, time: new Date().toLocaleString()}); setStorage('notes', notes); render(); } else alert('请输入内容'); });
-                document.getElementById('noteCancel').addEventListener('click', ()=>{ document.getElementById('noteTitle').value=''; document.getElementById('noteBody').value=''; });
+                document.getElementById('noteSave').addEventListener('click', () => { const title = document
+                        .getElementById('noteTitle').value.trim() || '便签'; const body = document.getElementById(
+                        'noteBody').value.trim(); if (body) { notes.push({ title, body, time: new Date()
+                            .toLocaleString() });
+                        setStorage('notes', notes);
+                        render(); } else alert('请输入内容'); });
+                document.getElementById('noteCancel').addEventListener('click', () => { document.getElementById(
+                        'noteTitle').value = '';
+                    document.getElementById('noteBody').value = ''; });
             }
             render();
         }
 
         // ----- 翻译 (Bing) -----
         function renderTranslate(body) {
-            body.innerHTML = `<div class="iframe-container"><iframe src="https://www.bing.com/translator" loading="lazy" allow="microphone; camera; encrypted-media"></iframe></div><div class="text-muted mt-8 text-center">🌐 由 Bing 翻译提供</div>`;
+            body.innerHTML =
+                `<div class="iframe-container"><iframe src="https://www.bing.com/translator" loading="lazy" allow="microphone; camera; encrypted-media"></iframe></div><div class="text-muted mt-8 text-center">🌐 由 Bing 翻译提供</div>`;
         }
 
         // ----- 天气 (中国天气) -----
         function renderWeather(body) {
-            body.innerHTML = `<div class="iframe-container"><iframe src="https://e.weather.com.cn/mweather/101044100.shtml" loading="lazy"></iframe></div><div class="text-muted mt-8 text-center">🌤️ 中国天气网</div>`;
+            body.innerHTML =
+                `<div class="iframe-container"><iframe src="https://e.weather.com.cn/mweather/101044100.shtml" loading="lazy"></iframe></div><div class="text-muted mt-8 text-center">🌤️ 中国天气网</div>`;
         }
 
         // ----- 信息 (支持sms) -----
         function renderMessages(body) {
-            let messages = getStorage('messages', [{from:'小李', text:'你好！今天有空吗？', time:'10:30', me:false},{from:'小王', text:'收到请回复', time:'09:15', me:false},{from:'我', text:'好的，没问题', time:'09:20', me:true}]);
+            let messages = getStorage('messages', [{ from: '小李', text: '你好！今天有空吗？', time: '10:30', me: false },
+                { from: '小王', text: '收到请回复', time: '09:15', me: false },
+                { from: '我', text: '好的，没问题', time: '09:20', me: true }
+            ]);
+
             function render() {
                 let html = `<div id="msgList"></div><div class="msg-compose"><input id="msgInput" placeholder="输入消息..."><button id="msgSend">发送</button></div>`;
                 body.innerHTML = html;
                 const list = document.getElementById('msgList');
-                if (messages.length===0) list.innerHTML = '<div class="empty-state"><span class="big-emoji">💬</span>暂无消息</div>';
+                if (messages.length === 0) list.innerHTML =
+                '<div class="empty-state"><span class="big-emoji">💬</span>暂无消息</div>';
                 else {
                     messages.forEach((m, idx) => {
-                        const div = document.createElement('div'); div.className = 'msg-item';
+                        const div = document.createElement('div');
+                        div.className = 'msg-item';
                         const initial = m.me ? '我' : (m.from ? m.from.charAt(0) : '?');
-                        div.innerHTML = `<div class="msg-avatar">${initial}</div><div class="msg-content"><div class="msg-name">${m.me ? '我' : m.from} <span class="msg-time">${m.time||''}</span></div><div class="msg-preview">${m.text}</div></div>
+                        div.innerHTML =
+                            `<div class="msg-avatar">${initial}</div><div class="msg-content"><div class="msg-name">${m.me ? '我' : m.from} <span class="msg-time">${m.time||''}</span></div><div class="msg-preview">${m.text}</div></div>
                             <button class="del-btn" style="background:none;border:none;color:#ff3b30;cursor:pointer;font-size:16px;" data-idx="${idx}">✕</button>
                             ${!m.me && m.from ? `<button class="sms-btn" style="background:none;border:none;font-size:16px;cursor:pointer;color:#2979ff;" data-contact="${m.from}">✉️</button>` : ''}`;
                         list.appendChild(div);
                     });
-                    list.querySelectorAll('.del-btn').forEach(btn => { btn.addEventListener('click', ()=>{ const idx=parseInt(btn.dataset.idx); messages.splice(idx,1); setStorage('messages', messages); render(); }); });
-                    list.querySelectorAll('.sms-btn').forEach(btn => { btn.addEventListener('click', ()=>{ const contact = btn.dataset.contact; if(contact) window.location.href = 'sms://'+contact; }); });
+                    list.querySelectorAll('.del-btn').forEach(btn => { btn.addEventListener('click', () => { const idx =
+                                parseInt(btn.dataset.idx);
+                            messages.splice(idx, 1);
+                            setStorage('messages', messages);
+                            render(); }); });
+                    list.querySelectorAll('.sms-btn').forEach(btn => { btn.addEventListener('click', () => { const contact =
+                                btn.dataset.contact; if (contact) window.location.href = 'sms://' + contact; }); });
                 }
-                document.getElementById('msgSend').addEventListener('click', ()=>{ const input = document.getElementById('msgInput'); const text = input.value.trim(); if(text){ const now = new Date(); const time = String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0'); messages.push({from:'我', text, time, me:true}); setStorage('messages', messages); render(); setTimeout(()=>{ const replies = ['收到！','好的','嗯嗯','明白了','👍','哈哈','好的呢']; const reply = replies[Math.floor(Math.random()*replies.length)]; const now2 = new Date(); const time2 = String(now2.getHours()).padStart(2,'0')+':'+String(now2.getMinutes()).padStart(2,'0'); messages.push({from:'小'+['李','王','张','刘'][Math.floor(Math.random()*4)], text:reply, time:time2, me:false}); setStorage('messages', messages); render(); }, 1500+Math.random()*2000); } });
-                document.getElementById('msgInput').addEventListener('keydown', (e)=>{ if(e.key==='Enter') document.getElementById('msgSend').click(); });
+                document.getElementById('msgSend').addEventListener('click', () => { const input = document.getElementById(
+                        'msgInput'); const text = input.value.trim(); if (text) { const now = new Date(); const time =
+                            String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2,
+                            '0');
+                        messages.push({ from: '我', text, time, me: true });
+                        setStorage('messages', messages);
+                        render();
+                        setTimeout(() => { const replies = ['收到！', '好的', '嗯嗯', '明白了', '👍', '哈哈', '好的呢']; const reply =
+                                replies[Math.floor(Math.random() * replies.length)]; const now2 = new Date();
+                            const time2 = String(now2.getHours()).padStart(2, '0') + ':' + String(now2.getMinutes())
+                                .padStart(2, '0');
+                            messages.push({ from: '小' + ['李', '王', '张', '刘'][Math.floor(Math.random() * 4)],
+                                text: reply, time: time2, me: false });
+                            setStorage('messages', messages);
+                            render(); }, 1500 + Math.random() * 2000); } });
+                document.getElementById('msgInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') document
+                        .getElementById('msgSend').click(); });
             }
             render();
         }
 
         // ----- 邮件 (mailto) -----
         function renderMail(body) {
-            let mails = getStorage('mails', [{from:'张三', subject:'项目进度汇报', preview:'本周项目进展顺利...', time:'10:00'},{from:'李四', subject:'会议邀请', preview:'请参加明天下午的会议...', time:'昨天'}]);
+            let mails = getStorage('mails', [{ from: '张三', subject: '项目进度汇报', preview: '本周项目进展顺利...', time: '10:00' },
+                { from: '李四', subject: '会议邀请', preview: '请参加明天下午的会议...', time: '昨天' }
+            ]);
+
             function render() {
-                let html = `<div id="mailList"></div><div class="mail-compose"><input id="mailTo" placeholder="收件人"><input id="mailSubject" placeholder="主题"><textarea id="mailBody" placeholder="邮件内容..."></textarea><div class="mail-actions"><button class="cancel" id="mailCancel">取消</button><button class="send" id="mailSend">发送 (mailto)</button></div></div>`;
+                let html =
+                    `<div id="mailList"></div><div class="mail-compose"><input id="mailTo" placeholder="收件人"><input id="mailSubject" placeholder="主题"><textarea id="mailBody" placeholder="邮件内容..."></textarea><div class="mail-actions"><button class="cancel" id="mailCancel">取消</button><button class="send" id="mailSend">发送 (mailto)</button></div></div>`;
                 body.innerHTML = html;
                 const list = document.getElementById('mailList');
-                if (mails.length===0) list.innerHTML = '<div class="empty-state"><span class="big-emoji">✉️</span>暂无邮件</div>';
+                if (mails.length === 0) list.innerHTML =
+                '<div class="empty-state"><span class="big-emoji">✉️</span>暂无邮件</div>';
                 else {
                     mails.forEach((m, idx) => {
-                        const div = document.createElement('div'); div.className = 'mail-item';
-                        div.innerHTML = `<div class="mail-from">${m.from} <span class="mail-time">${m.time||''}</span></div><div class="mail-subject">${m.subject||'无主题'}</div><div class="mail-preview">${m.preview||''}</div><button class="del-btn" style="background:none;border:none;color:#ff3b30;cursor:pointer;font-size:14px;float:right;margin-top:-20px;" data-idx="${idx}">✕</button>`;
+                        const div = document.createElement('div');
+                        div.className = 'mail-item';
+                        div.innerHTML =
+                            `<div class="mail-from">${m.from} <span class="mail-time">${m.time||''}</span></div><div class="mail-subject">${m.subject||'无主题'}</div><div class="mail-preview">${m.preview||''}</div><button class="del-btn" style="background:none;border:none;color:#ff3b30;cursor:pointer;font-size:14px;float:right;margin-top:-20px;" data-idx="${idx}">✕</button>`;
                         list.appendChild(div);
                     });
-                    list.querySelectorAll('.del-btn').forEach(btn => { btn.addEventListener('click', ()=>{ const idx=parseInt(btn.dataset.idx); mails.splice(idx,1); setStorage('mails', mails); render(); }); });
+                    list.querySelectorAll('.del-btn').forEach(btn => { btn.addEventListener('click', () => { const idx =
+                                parseInt(btn.dataset.idx);
+                            mails.splice(idx, 1);
+                            setStorage('mails', mails);
+                            render(); }); });
                 }
-                document.getElementById('mailSend').addEventListener('click', ()=>{
+                document.getElementById('mailSend').addEventListener('click', () => {
                     const to = document.getElementById('mailTo').value.trim();
                     const subject = document.getElementById('mailSubject').value.trim() || '无主题';
                     const bodyText = document.getElementById('mailBody').value.trim();
                     if (to && bodyText) {
-                        const mailtoLink = `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyText)}`;
+                        const mailtoLink =
+                            `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyText)}`;
                         window.location.href = mailtoLink;
-                        mails.push({from:'我', to, subject, preview: bodyText.slice(0,30), time: new Date().toLocaleString()});
+                        mails.push({ from: '我', to, subject, preview: bodyText.slice(0, 30), time: new Date()
+                                .toLocaleString() });
                         setStorage('mails', mails);
                         render();
                         document.getElementById('mailTo').value = '';
@@ -1305,7 +2800,7 @@
                         alert('请填写收件人和内容');
                     }
                 });
-                document.getElementById('mailCancel').addEventListener('click', ()=>{
+                document.getElementById('mailCancel').addEventListener('click', () => {
                     document.getElementById('mailTo').value = '';
                     document.getElementById('mailSubject').value = '';
                     document.getElementById('mailBody').value = '';
@@ -1314,7 +2809,7 @@
             render();
         }
 
-        // ----- 电话 (拨号 + tel) -----
+        // ----- 电话 (修复布局) -----
         function renderPhone(body) {
             let number = '';
             const container = document.createElement('div');
@@ -1323,27 +2818,42 @@
                 <div class="number-display" id="phoneNumber">${number || ' '}</div>
                 <div class="dial-pad">
                     ${['1','2','3','4','5','6','7','8','9','*','0','#'].map(n => `<button data-digit="${n}">${n}</button>`).join('')}
-                </div>
-                <div style="display:flex; gap:16px; margin-top:12px;">
-                    <button class="call-btn" id="phoneCallBtn" style="padding:12px 32px; border:none; border-radius:40px; background:#4caf50; color:#fff; font-size:20px; font-weight:600; cursor:pointer;">📞 呼叫</button>
-                    <button class="delete-btn" id="phoneDeleteBtn" style="padding:12px 24px; border:none; border-radius:40px; background:#ff3b30; color:#fff; font-size:18px; cursor:pointer;">⌫</button>
+                    <button class="call-btn" id="phoneCallBtn" style="grid-column:1/2;">📞</button>
+                    <button class="delete-btn" id="phoneDeleteBtn" style="grid-column:2/3;">⌫</button>
+                    <button class="sms-btn" id="phoneSmsBtn" style="grid-column:3/4; background:#2979ff; color:#fff;">✉️</button>
                 </div>
                 <div class="action-row">
-                    <button class="sms-btn" id="phoneSmsBtn">💬 发短信</button>
+                    <button class="sms-btn" id="phoneSmsBtn2" style="background:#2979ff; color:#fff;">💬 发短信</button>
+                    <button class="call-btn" id="phoneCallBtn2" style="background:#4caf50; color:#fff;">📞 呼叫</button>
                 </div>
             `;
             body.appendChild(container);
             const display = document.getElementById('phoneNumber');
+
             function updateDisplay() { display.textContent = number || ' '; }
+
             container.querySelectorAll('.dial-pad button').forEach(btn => {
-                btn.addEventListener('click', () => { number += btn.dataset.digit; updateDisplay(); });
+                btn.addEventListener('click', () => {
+                    const digit = btn.dataset.digit;
+                    if (digit) { number += digit;
+                        updateDisplay(); }
+                });
             });
-            document.getElementById('phoneDeleteBtn').addEventListener('click', () => { number = number.slice(0, -1); updateDisplay(); });
-            document.getElementById('phoneCallBtn').addEventListener('click', () => { if (number) window.location.href = 'tel://' + number; else alert('请输入号码'); });
-            document.getElementById('phoneSmsBtn').addEventListener('click', () => { if (number) window.location.href = 'sms://' + number; else alert('请输入号码'); });
+
+            const callFn = () => { if (number) window.location.href = 'tel://' + number;
+                else alert('请输入号码'); };
+            const smsFn = () => { if (number) window.location.href = 'sms://' + number;
+                else alert('请输入号码'); };
+
+            document.getElementById('phoneDeleteBtn').addEventListener('click', () => { number = number.slice(0, -1);
+                updateDisplay(); });
+            document.getElementById('phoneCallBtn').addEventListener('click', callFn);
+            document.getElementById('phoneCallBtn2').addEventListener('click', callFn);
+            document.getElementById('phoneSmsBtn').addEventListener('click', smsFn);
+            document.getElementById('phoneSmsBtn2').addEventListener('click', smsFn);
         }
 
-        // ===== 地图 (多提供商) =====
+        // ===== 地图 (多提供商, 自适应高度) =====
         function renderMap(body) {
             const providers = [
                 { name: '高德地图', url: 'https://m.amap.com/' },
@@ -1352,8 +2862,10 @@
                 { name: 'Google地图', url: 'https://www.google.com/maps' }
             ];
             let currentProvider = 0;
-
             const container = document.createElement('div');
+            container.style.display = 'flex';
+            container.style.flexDirection = 'column';
+            container.style.flex = '1';
             container.innerHTML = `
                 <div class="map-tabs" id="mapTabs">
                     ${providers.map((p, i) => `<span class="tab ${i===0?'active':''}" data-idx="${i}">${p.name}</span>`).join('')}
@@ -1361,7 +2873,6 @@
                 <iframe class="map-frame" id="mapFrame" src="${providers[0].url}" loading="lazy" allow="geolocation"></iframe>
             `;
             body.appendChild(container);
-
             const frame = document.getElementById('mapFrame');
             const tabs = container.querySelectorAll('.tab');
             tabs.forEach(tab => {
@@ -1385,9 +2896,10 @@
             ];
             let currentPlatform = 0;
             let playlist = getStorage('musicPlaylist', []);
-            let currentTrack = null, audio = new Audio(), currentIndex = -1;
+            let currentTrack = null,
+                audio = new Audio(),
+                currentIndex = -1;
 
-            // 本地播放器相关
             function renderLocalPlayer() {
                 let html = `
                     <div class="upload-area">
@@ -1436,7 +2948,6 @@
                     const platform = platforms[currentPlatform];
                     if (platform.type === 'local') {
                         content.innerHTML = renderLocalPlayer();
-                        // 绑定本地播放器事件
                         bindLocalEvents(content);
                     } else {
                         content.innerHTML = renderOnlinePlayer(platform.url);
@@ -1444,7 +2955,6 @@
                 }
 
                 function bindLocalEvents(container) {
-                    // 上传
                     const fileInput = container.querySelector('#musicFileInput');
                     if (fileInput) {
                         fileInput.addEventListener('change', (e) => {
@@ -1459,12 +2969,11 @@
                             render();
                         });
                     }
-
-                    // 播放列表
                     const list = container.querySelector('#musicPlaylist');
                     if (list) {
                         if (playlist.length === 0) {
-                            list.innerHTML = '<div class="empty-state"><span class="big-emoji">🎵</span>暂无歌曲，请上传</div>';
+                            list.innerHTML =
+                            '<div class="empty-state"><span class="big-emoji">🎵</span>暂无歌曲，请上传</div>';
                         } else {
                             playlist.forEach((track, idx) => {
                                 const div = document.createElement('div');
@@ -1490,15 +2999,14 @@
                                     const idx = parseInt(btn.dataset.del);
                                     playlist.splice(idx, 1);
                                     setStorage('musicPlaylist', playlist);
-                                    if (currentIndex === idx) { audio.pause(); currentTrack = null; currentIndex = -1; }
-                                    else if (currentIndex > idx) currentIndex--;
+                                    if (currentIndex === idx) { audio.pause();
+                                        currentTrack = null;
+                                        currentIndex = -1; } else if (currentIndex > idx) currentIndex--;
                                     render();
                                 });
                             });
                         }
                     }
-
-                    // 控制按钮
                     const playPause = container.querySelector('#musicPlayPause');
                     const stopBtn = container.querySelector('#musicStop');
                     const prevBtn = container.querySelector('#musicPrev');
@@ -1518,7 +3026,8 @@
                             audio.pause();
                             audio.currentTime = 0;
                             const display = container.querySelector('#currentTrackDisplay');
-                            if (display) display.textContent = currentTrack ? '已停止: '+currentTrack : '未播放';
+                            if (display) display.textContent = currentTrack ? '已停止: ' + currentTrack :
+                                '未播放';
                         });
                     }
                     if (prevBtn) {
@@ -1547,7 +3056,7 @@
                     currentTrack = track.name;
                     currentIndex = idx;
                     const display = document.querySelector('#currentTrackDisplay');
-                    if (display) display.textContent = '正在播放: '+track.name;
+                    if (display) display.textContent = '正在播放: ' + track.name;
                     render();
                     audio.onended = () => {
                         let next = currentIndex + 1;
@@ -1557,7 +3066,6 @@
                 }
 
                 renderContent();
-                // 清理
                 window._musicCleanup = () => {
                     audio.pause();
                     audio.src = '';
@@ -1566,14 +3074,15 @@
             render();
         }
 
-        // ----- 浏览器 (默认百度) -----
+        // ----- 浏览器 (自适应) -----
         function renderBrowser(body) {
-            const defaultUrl = 'https://www.baidu.com/from=844b/ssid=0/s?word=%E7%99%BE%E5%BA%A6&sa=tb&ts=0&t_kt=0&ie=utf-8&ms=1&rsv_t=acd1LJnWt40uIJlLGFtOBIzi%252F31n2IO2Mky8kWfJhcLQWWkP4zS5NWlc0g&rsv_pq=10925249139932774113&ss=100&sugid=278181384433411&rfrom=1024439f&rchannel=1024439j&rqid=10925249139932774113';
+            const defaultUrl =
+                'https://www.baidu.com/from=844b/ssid=0/s?word=%E7%99%BE%E5%BA%A6&sa=tb&ts=0&t_kt=0&ie=utf-8&ms=1&rsv_t=acd1LJnWt40uIJlLGFtOBIzi%252F31n2IO2Mky8kWfJhcLQWWkP4zS5NWlc0g&rsv_pq=10925249139932774113&ss=100&sugid=278181384433411&rfrom=1024439f&rchannel=1024439j&rqid=10925249139932774113';
             let currentUrl = defaultUrl;
             const container = document.createElement('div');
             container.style.display = 'flex';
             container.style.flexDirection = 'column';
-            container.style.height = '100%';
+            container.style.flex = '1';
             container.innerHTML = `
                 <div class="browser-bar">
                     <input type="text" id="browserUrl" value="${defaultUrl}" placeholder="输入网址">
@@ -1589,6 +3098,7 @@
             const frame = container.querySelector('iframe');
             const goBtn = document.getElementById('browserGo');
             const refreshBtn = document.getElementById('browserRefresh');
+
             function navigate(url) {
                 if (!url.startsWith('http://') && !url.startsWith('https://')) url = 'https://' + url;
                 currentUrl = url;
@@ -1596,39 +3106,60 @@
                 urlInput.value = url;
             }
             goBtn.addEventListener('click', () => { const val = urlInput.value.trim(); if (val) navigate(val); });
-            urlInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { const val = urlInput.value.trim(); if (val) navigate(val); } });
+            urlInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { const val = urlInput.value.trim(); if (
+                        val) navigate(val); } });
             refreshBtn.addEventListener('click', () => { frame.src = currentUrl; });
             frame.src = defaultUrl;
         }
 
-        // ===== 设置 (亮度、音量、锁屏密码、一键锁定) =====
+        // ===== 设置 (增强版) =====
         function renderSettings(body) {
-            // 从存储中读取亮度 (0-1) 和音量 (0-1)
             let brightness = getStorage('brightness', 0.8);
             let volume = getStorage('volume', 0.6);
+            let fontSize = getStorage('fontSize', 16);
+            let theme = getStorage('theme', 'light'); // 'light' or 'dark'
 
-            // 应用到页面
+            // 应用设置
             function applyBrightness(val) {
                 brightness = val;
                 setStorage('brightness', brightness);
-                // 通过调节手机壳背景透明度模拟亮度，或使用滤镜
                 const phone = document.getElementById('phone');
-                // 我们调节 phone 的背景亮度，使用滤镜
                 const v = Math.round(brightness * 100);
                 phone.style.filter = `brightness(${v}%)`;
             }
+
             function applyVolume(val) {
                 volume = val;
                 setStorage('volume', volume);
-                // 音量影响所有audio元素
                 document.querySelectorAll('audio').forEach(a => a.volume = volume);
-                // 也存储到全局变量，方便新创建的audio
                 window._globalVolume = volume;
             }
+
+            function applyFontSize(val) {
+                fontSize = val;
+                setStorage('fontSize', fontSize);
+                document.querySelector('.phone').style.fontSize = fontSize + 'px';
+                // 调整部分元素，但不会全局覆盖，仅示意
+            }
+
+            function applyTheme(val) {
+                theme = val;
+                setStorage('theme', theme);
+                const phone = document.getElementById('phone');
+                if (theme === 'dark') {
+                    phone.classList.add('dark-theme');
+                } else {
+                    phone.classList.remove('dark-theme');
+                }
+            }
+
             // 初始化
             applyBrightness(brightness);
             applyVolume(volume);
-            // 监听到新audio
+            applyFontSize(fontSize);
+            applyTheme(theme);
+
+            // 修正Audio构造函数
             const origAudio = window.Audio;
             window.Audio = function() {
                 const a = new origAudio();
@@ -1636,7 +3167,6 @@
                 return a;
             };
 
-            // 渲染设置界面
             const container = document.createElement('div');
             container.innerHTML = `
                 <div class="setting-group">
@@ -1656,6 +3186,21 @@
                     </div>
                 </div>
                 <div class="setting-group">
+                    <div class="setting-title">🔤 字体大小</div>
+                    <div class="setting-row">
+                        <span class="label">大小</span>
+                        <input type="range" id="fontSizeSlider" min="12" max="24" step="1" value="${fontSize}">
+                        <span class="value" id="fontSizeValue">${fontSize}px</span>
+                    </div>
+                </div>
+                <div class="setting-group">
+                    <div class="setting-title">🎨 主题</div>
+                    <div class="setting-row">
+                        <span class="label">深色模式</span>
+                        <button class="btn" id="themeToggle">${theme === 'dark' ? '切换到浅色' : '切换到深色'}</button>
+                    </div>
+                </div>
+                <div class="setting-group">
                     <div class="setting-title">🔐 锁屏密码</div>
                     <div class="setting-row">
                         <div class="setting-password-input">
@@ -1665,35 +3210,64 @@
                         </div>
                     </div>
                     <div class="setting-row" style="margin-top:8px;">
-                        <span class="label">当前状态: ${lockPassword ? '已设置' : '未设置'}</span>
+                        <span class="label" id="passwordStatus">当前状态: ${lockPassword ? '已设置' : '未设置'}</span>
                         <button class="btn" id="settingsLockNow">🔒 立即锁定</button>
+                    </div>
+                </div>
+                <div class="setting-group">
+                    <div class="setting-title">🗑️ 数据管理</div>
+                    <div class="setting-row">
+                        <span class="label">重置所有数据 (将清除所有应用数据)</span>
+                        <button class="btn" id="resetAllData" style="background:#ff3b30;">重置</button>
                     </div>
                 </div>
                 <div class="setting-group">
                     <div class="setting-title">ℹ️ 关于</div>
                     <div class="setting-row">
-                        <span class="label">NarutoOS v2.0</span>
+                        <span class="label">NarutoOS v2.1</span>
+                    </div>
+                    <div class="setting-row">
+                        <span class="label">应用数: ${APPS.length}</span>
+                    </div>
+                    <div class="setting-row">
+                        <span class="label">存储占用: ~${Math.round(localStorage.length / 1024)} KB</span>
                     </div>
                 </div>
             `;
             body.appendChild(container);
 
-            // 亮度滑块
+            // 亮度
             const brightnessSlider = document.getElementById('brightnessSlider');
             const brightnessValue = document.getElementById('brightnessValue');
             brightnessSlider.addEventListener('input', () => {
                 const val = parseFloat(brightnessSlider.value);
-                brightnessValue.textContent = Math.round(val*100) + '%';
+                brightnessValue.textContent = Math.round(val * 100) + '%';
                 applyBrightness(val);
             });
 
-            // 音量滑块
+            // 音量
             const volumeSlider = document.getElementById('volumeSlider');
             const volumeValue = document.getElementById('volumeValue');
             volumeSlider.addEventListener('input', () => {
                 const val = parseFloat(volumeSlider.value);
-                volumeValue.textContent = Math.round(val*100) + '%';
+                volumeValue.textContent = Math.round(val * 100) + '%';
                 applyVolume(val);
+            });
+
+            // 字体大小
+            const fontSizeSlider = document.getElementById('fontSizeSlider');
+            const fontSizeValue = document.getElementById('fontSizeValue');
+            fontSizeSlider.addEventListener('input', () => {
+                const val = parseInt(fontSizeSlider.value);
+                fontSizeValue.textContent = val + 'px';
+                applyFontSize(val);
+            });
+
+            // 主题切换
+            document.getElementById('themeToggle').addEventListener('click', () => {
+                const newTheme = theme === 'dark' ? 'light' : 'dark';
+                applyTheme(newTheme);
+                document.getElementById('themeToggle').textContent = newTheme === 'dark' ? '切换到浅色' : '切换到深色';
             });
 
             // 设置密码
@@ -1704,9 +3278,7 @@
                     setStorage('lockPassword', lockPassword);
                     alert('密码已设定为 ' + lockPassword);
                     document.getElementById('settingsNewPassword').value = '';
-                    // 更新状态显示
-                    const statusEl = container.querySelector('.setting-row .label');
-                    if (statusEl) statusEl.textContent = '当前状态: 已设置';
+                    document.getElementById('passwordStatus').textContent = '当前状态: 已设置';
                 } else {
                     alert('请输入4位数字密码');
                 }
@@ -1718,9 +3290,7 @@
                     lockPassword = '';
                     setStorage('lockPassword', '');
                     alert('密码已清除');
-                    const statusEl = container.querySelector('.setting-row .label');
-                    if (statusEl) statusEl.textContent = '当前状态: 未设置';
-                    // 如果当前锁屏，解锁
+                    document.getElementById('passwordStatus').textContent = '当前状态: 未设置';
                     if (isLocked) {
                         isLocked = false;
                         lockScreen.classList.remove('active');
@@ -1737,11 +3307,19 @@
                     alert('请先设定锁屏密码');
                 }
             });
+
+            // 重置所有数据
+            document.getElementById('resetAllData').addEventListener('click', () => {
+                if (confirm('确定重置所有数据吗？此操作不可撤销！')) {
+                    localStorage.clear();
+                    location.reload();
+                }
+            });
         }
 
         // ========== 初始化 ==========
         renderAll();
-        console.log('🍥 NarutoOS 已启动! (地图多提供商、音乐多平台、设置含亮度/音量/密码)');
+        console.log('🍥 NarutoOS 已启动! (电话布局修复，地图/浏览器自适应，设置增强)');
     </script>
 </body>
 </html>
